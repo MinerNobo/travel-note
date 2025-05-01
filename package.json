@@ -22,7 +22,7 @@
     "build:qq": "taro build --type qq",
     "build:jd": "taro build --type jd",
     "build:harmony-hybrid": "taro build --type harmony-hybrid",
-    "dev:weapp": "npm run build:weapp -- --watch",
+    "dev:weapp": "npm run build:weapp -- --watch --port 8080",
     "dev:swan": "npm run build:swan -- --watch",
     "dev:alipay": "npm run build:alipay -- --watch",
     "dev:tt": "npm run build:tt -- --watch",
@@ -59,7 +59,8 @@
     "@tarojs/shared": "4.0.12",
     "@tarojs/taro": "4.0.12",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "zustand": "^4.5.6"
   },
   "devDependencies": {
     "@babel/core": "^7.24.4",
