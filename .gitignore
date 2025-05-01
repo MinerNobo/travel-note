@@ -6,3 +6,25 @@ node_modules/
 .DS_Store
 .swc
 *.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build
+build/
+dist/
+temp/
