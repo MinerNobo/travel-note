@@ -10,6 +10,12 @@ const Login = () => {
 
     const { login } = useStore();
 
+    const handleClick = () => {
+        Taro.navigateTo({
+            url: '/pages/register/index',
+        })
+    }
+
     const handleSubmit = async () => {
         if (!/^1[3-9]\d{9}$/.test(phoneNumber)) {
             Taro.showToast({
@@ -29,17 +35,25 @@ const Login = () => {
             });
 
             // 成功后修改全局状态
-            login({
-                id: res.data.id,
-                name: res.data.name,
-                phoneNumber: res.data.phone,
-                avatar: res.data.avatar || '',
-            })
-
-            Taro.showToast({
-                title: '登录成功',
-                icon: 'success'
-            })
+            if (res.statusCode === 200) {
+                const userData = res.data.data;
+                login({
+                    id: userData.id,
+                    name: userData.name,
+                    phoneNumber: userData.phoneNumber,
+                    avatar: userData.avatar || '',
+                })
+    
+                Taro.showToast({
+                    title: '登录成功',
+                    icon: 'success'
+                })
+            } else {
+                Taro.showToast({
+                    title: res.data.message,
+                    icon: 'none'
+                })
+            }
 
             // 登录成功后跳转到我的那页
             setTimeout(() => {
@@ -83,6 +97,9 @@ const Login = () => {
                 onClick={handleSubmit}>
                 登录
             </Button>
+
+            <Text>还没有账号?</Text>
+            <Button onClick={handleClick}>注册</Button>
 
         </View>
     )
