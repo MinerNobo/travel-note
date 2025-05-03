@@ -15,6 +15,7 @@ interface AuthStore {
 
     login: (userData: any) => void;
     logout: () => void;
+    setUser: (userData: User | null) => void;
 }
 
 export const useStore = create<AuthStore>()(
@@ -23,7 +24,8 @@ export const useStore = create<AuthStore>()(
             user: null,
             isLoggedIn: false,
             login: (userData) => set({ user: userData, isLoggedIn: true}),
-            logout: () => set({ user: null, isLoggedIn: false}), 
+            logout: () => set({ user: null, isLoggedIn: false}),
+            setUser: (userData) => set({ user: userData }),
         }),
         {
             name: 'auth-store', // 键名

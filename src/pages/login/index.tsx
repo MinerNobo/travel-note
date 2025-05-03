@@ -73,8 +73,6 @@ const Login = () => {
 
     return (
         <View>
-            <Text>登录</Text>
-
             <Input 
                 type="text"
                 maxlength={11}
