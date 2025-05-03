@@ -1,9 +1,9 @@
 import { View, Text } from "@tarojs/components";
 
-export default function Itinerary() {
+export default function Publish() {
   return (
     <View>
-      <Text>我的行程 从携程API获取</Text>
+      <Text>发布游记</Text>
     </View>
   );
 }

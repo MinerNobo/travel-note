@@ -1,5 +1,5 @@
 export default defineAppConfig({
-  pages: ["pages/index/index", "pages/itinerary/index", "pages/message/index", "pages/mine/index", "pages/login/index", 'pages/register/index'],
+  pages: ["pages/index/index", "pages/myNote/index", "pages/publish/index", "pages/mine/index", "pages/login/index", 'pages/register/index'],
   window: {
     backgroundTextStyle: "light",
     navigationBarBackgroundColor: "#fff",
@@ -19,12 +19,12 @@ export default defineAppConfig({
         text: "首页",
       },
       {
-        pagePath: "pages/itinerary/index",
-        text: "行程",
+        pagePath: "pages/myNote/index",
+        text: "游记",
       },
       {
-        pagePath: "pages/message/index",
-        text: "消息",
+        pagePath: "pages/publish/index",
+        text: "发布",
       },
       {
         pagePath: "pages/mine/index",
