@@ -13,6 +13,10 @@ import ava02 from '../../assets/avatarImages/avatar02.jpg'
 import ava03 from '../../assets/avatarImages/avatar03.jpg'
 import ava04 from '../../assets/avatarImages/avatar04.jpg'
 
+// 1. Post取消likes，头像和昵称两侧显示
+// 2. 实现顶部搜索框，根据标题显示结果
+// 3. 瀑布流交错显示
+
 // 示例数据
 const mockData = [
   {
@@ -21,7 +25,6 @@ const mockData = [
     title: '香港迪士尼正确游玩路线',
     avatar: ava01,
     author: '娜娜在港漂流记',
-    likes: 881,
   },
   {
     id: 2,
@@ -29,7 +32,6 @@ const mockData = [
     title: '深圳大南山',
     avatar: ava02,
     author: '猫猫的城市日记',
-    likes: 2293,
   },
   {
     id: 3,
@@ -37,7 +39,6 @@ const mockData = [
     title: '本地人吐血整理超全攻略',
     avatar: ava03,
     author: '花花美宿记',
-    likes: 1562,
   },
   {
     id: 4,
@@ -45,7 +46,6 @@ const mockData = [
     title: '✨ 上海外滩｜一键get氛围感大片',
     avatar: ava04,
     author: '鹤顶红',
-    likes: 3478,
   },
   // 重复添加数据用于展示瀑布流效果
   {
@@ -54,7 +54,6 @@ const mockData = [
     title: '深圳梧桐山徒步攻略',
     avatar: ava02,
     author: '猫猫的城市日记',
-    likes: 1823,
   },
   {
     id: 6,
@@ -62,7 +61,6 @@ const mockData = [
     title: '广州一日游推荐路线',
     avatar: ava01,
     author: '娜娜在港漂流记',
-    likes: 2716,
   },
   {
     id: 7,
@@ -70,7 +68,6 @@ const mockData = [
     title: '北京胡同探秘之旅',
     avatar: ava03,
     author: '花花美宿记',
-    likes: 3092,
   },
   {
     id: 8,
@@ -78,18 +75,10 @@ const mockData = [
     title: '青岛崂山徒步全攻略',
     avatar: ava04,
     author: '鹤顶红',
-    likes: 1945,
   },
 ]
 
 export default function Index() {
-  const handleCardClick = (item) => {
-    Taro.showToast({
-      title: `点击了: ${item.title}`,
-      icon: 'none',
-    })
-  }
-
   return (
     <View className='index'>
       <View className='content'>

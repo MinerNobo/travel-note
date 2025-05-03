@@ -6,14 +6,13 @@ export interface Post {
     title: string,
     author: string,
     avatar: string,
-    likes: number,
 }
 
 interface PostItemProps {
     item: Post,
 }
 
-const PostItem = ({ item }: PostItemProps) => {
+const PostItem = ({ item } : PostItemProps) => {
     return (
         <View className="waterfall-item">
 
@@ -31,12 +30,6 @@ const PostItem = ({ item }: PostItemProps) => {
                     src={item.avatar}
                 />
                 <Text className="author-name">{item.author}</Text>
-
-                <View className='likes'>
-                <View className='like-icon'>♥</View>
-                <Text className='like-count'>{item.likes}</Text>
-                </View>
-
             </View>
         </View>
     )

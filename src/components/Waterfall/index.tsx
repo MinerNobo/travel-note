@@ -2,27 +2,19 @@ import { View } from '@tarojs/components'
 import './index.scss'
 import { useEffect, useState } from 'react'
 import PostItem from './PostItem';
-
-interface PostItem {
-  id: number,
-  imageUrl: string,
-  title: string,
-  author: string,
-  avatar: string,
-  likes: number,
-}
+import { Post } from './PostItem';
 
 interface WaterfallProps {
-  data: PostItem[],
+  data: Post[],
 }
 
 const Waterfall = ({ data }: WaterfallProps ) => {
-  const [leftList, setLeftList] = useState<PostItem[]>([]);
-  const [rightList, setRightList] = useState<PostItem[]>([]);
+  const [leftList, setLeftList] = useState<Post[]>([]);
+  const [rightList, setRightList] = useState<Post[]>([]);
 
   useEffect(() => {
-    const left: PostItem[] = [];
-    const right: PostItem[] = [];
+    const left: Post[] = [];
+    const right: Post[] = [];
 
     data.forEach((item, index) => {
       if (index % 2 === 0) {
