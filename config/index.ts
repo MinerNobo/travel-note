@@ -49,6 +49,7 @@ export default defineConfig<"vite">(async (merge, { command, mode }) => {
         filename: "css/[name].[hash].css",
         chunkFilename: "css/[name].[chunkhash].css",
       },
+      esnextModules: ['taro-ui'],
       postcss: {
         autoprefixer: {
           enable: true,

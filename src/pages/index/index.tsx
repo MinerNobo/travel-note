@@ -1,7 +1,7 @@
 import { View } from '@tarojs/components'
-import Taro from '@tarojs/taro'
 import { Waterfall } from '../../components'
 import './index.scss'
+import { AtSearchBar } from 'taro-ui'
 
 import card01 from '../../assets/cardImages/card01.jpg'
 import card02 from '../../assets/cardImages/card02.jpg'
@@ -12,10 +12,9 @@ import ava01 from '../../assets/avatarImages/avatar01.jpg'
 import ava02 from '../../assets/avatarImages/avatar02.jpg'
 import ava03 from '../../assets/avatarImages/avatar03.jpg'
 import ava04 from '../../assets/avatarImages/avatar04.jpg'
+import { useEffect, useState } from 'react'
 
-// 1. Post取消likes，头像和昵称两侧显示
-// 2. 实现顶部搜索框，根据标题显示结果
-// 3. 瀑布流交错显示
+// Todo：瀑布流交错显示
 
 // 示例数据
 const mockData = [
@@ -79,10 +78,28 @@ const mockData = [
 ]
 
 export default function Index() {
+  const [searchValue, setSearchValue] = useState('');
+  const [postData, setPostData] = useState(mockData);
+
+  const handleChange = (value: string) => {
+    setSearchValue(value);
+  }
+
+  const handleClick = () => {
+    setPostData(mockData.filter((item) => item.title.includes(searchValue)));
+  }
+
   return (
     <View className='index'>
+
+      <AtSearchBar 
+        value={searchValue}
+        onChange={handleChange}
+        onActionClick={handleClick}
+      />
+
       <View className='content'>
-        <Waterfall data={mockData} />
+        <Waterfall data={postData} />
       </View>
     </View>
   )
