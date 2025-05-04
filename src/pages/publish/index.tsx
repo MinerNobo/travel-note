@@ -1,10 +1,10 @@
 import { View, Text, Input, Textarea, Button, Image } from "@tarojs/components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Taro from "@tarojs/taro";
 import "./index.scss";
 import imageIcon from '../../assets/icons/image.png'
 import videoIcon from '../../assets/icons/video.png'
-
+import { useStore } from "../../store/useStore";
 // 发布页的功能
 // 1. 选择图片（图片可上传多张），视频（最多上传一个）
 // 2. 输入标题
@@ -12,6 +12,7 @@ import videoIcon from '../../assets/icons/video.png'
 // 4. 发布
 // 5. 发布成功后，跳转到游记详情页
 // 6. 对发布的内容必须做校验，标题，内容， 图片是必须的
+// 7. 接口上，先上传照片和视频，拿到imageUrls和videoUrl，然后发布游记
 
 export default function Publish() {
   const [title, setTitle] = useState("");
@@ -19,6 +20,26 @@ export default function Publish() {
   const [images, setImages] = useState<string[]>([]);
   const [video, setVideo] = useState<string[]>([]);
   const [agreed, setAgreed] = useState(false);
+
+  const { user, isLoggedIn } = useStore();
+
+  // 页面加载时检查登录状态
+  useEffect(() => {
+    if (!isLoggedIn) {
+      Taro.showToast({
+        title: "请先登录",
+        icon: "none",
+        duration: 2000
+      });
+      
+      // 延迟跳转到登录页面
+      setTimeout(() => {
+        Taro.navigateTo({
+          url: '/pages/login/index',
+        });
+      }, 1500);
+    }
+  }, [isLoggedIn]);
 
   // 选择图片
   const chooseImage = () => {
@@ -80,7 +101,25 @@ export default function Publish() {
   };
 
   // 发布
-  const handlePublish = () => {
+  const handlePublish = async () => {
+    // 检查用户是否登录
+    if (!isLoggedIn) {
+      Taro.showToast({
+        title: "请先登录",
+        icon: "none",
+        duration: 2000
+      });
+      
+      // 延迟跳转到登录页面
+      setTimeout(() => {
+        Taro.navigateTo({
+          url: '/pages/login/index',
+        });
+      }, 1500);
+      
+      return;
+    }
+    
     if (!validate()) {
       Taro.showToast({
         title: "请完善发布信息",
@@ -89,27 +128,95 @@ export default function Publish() {
       return;
     }
 
-    // 这里应该是上传图片、视频和发布内容的逻辑
     Taro.showLoading({ title: "发布中..." });
-    
-    setTimeout(() => {
-      Taro.hideLoading();
-      Taro.showToast({
-        title: "发布成功",
-        icon: "success",
-        duration: 2000,
-        success: () => {
-          // 假设发布成功后需要生成一个唯一的id
-          const travelNoteId = "123";
-          // 发布成功后跳转到游记详情页
-          setTimeout(() => {
-            Taro.navigateTo({
-              url: '/pages/travelNote/index/index'
-            });
-          }, 1000);
+
+    try {
+      // 1. 先上传图片，拿到imageUrls
+      const imageUrls = [];
+      if (images.length > 0) {
+        for (let i = 0; i < images.length; i++) {
+          const imageRes = await Taro.uploadFile({
+            url: "http://localhost:4000/upload/image",
+            filePath: images[i],
+            name: "image",
+            header: {
+              "content-Type": "multipart/form-data"
+            }
+          });
+          
+          if (imageRes.statusCode === 200) {
+            const data = imageRes.data;
+            imageUrls.push(data.url);
+          } else {
+            throw new Error("图片上传失败");
+          }
+        }
+      }
+
+      // 2. 上传视频，拿到videoUrl  
+      let videoUrl = "";
+      if (video.length > 0) {
+        const videoRes = await Taro.uploadFile({
+          url: "http://localhost:4000/upload/video",
+          filePath: video[0],
+          name: "video",
+          header: {
+            "content-Type": "multipart/form-data"
+          }
+        });
+
+        if (videoRes.statusCode === 200) {
+          const data = videoRes.data;
+          videoUrl = data.url;
+        } else {
+          throw new Error("视频上传失败");
+        }
+      }
+
+      // 3. 发布游记内容
+      const postRes = await Taro.request({
+        url: "http://localhost:4000/travel-notes",
+        method: "POST",
+        data: {
+          title,
+          content,
+          userId: user.id,
+          images: imageUrls,
+          video: videoUrl
+        },
+        header: {
+          "content-type": "application/json"
         }
       });
-    }, 1500);
+
+      if (postRes.statusCode === 200) {
+        const travelNoteId = postRes.data.id;
+        
+        Taro.hideLoading();
+        Taro.showToast({
+          title: "发布成功",
+          icon: "success",
+          duration: 2000,
+          success: () => {
+            // 发布成功后跳转到首页
+            setTimeout(() => {
+              Taro.navigateTo({
+                url: '/pages/index/index',
+              });
+            }, 1000);
+          }
+        });
+      } else {
+        throw new Error(postRes.data.message || "发布失败");
+      }
+    } catch (error: Error | unknown) {
+      Taro.hideLoading();
+      Taro.showToast({
+        title: error instanceof Error ? error.message : "发布失败，请重试",
+        icon: "none",
+        duration: 2000
+      });
+    }
   };
 
   const handleRuleClick = () => {
@@ -122,9 +229,6 @@ export default function Publish() {
 
   return (
     <View className="publish-page">
-      <View className="publish-header">
-        <Text className="header-title">分享你的游记吧</Text>
-      </View>
 
       <View className="publish-content">
         <View className="media-section">
