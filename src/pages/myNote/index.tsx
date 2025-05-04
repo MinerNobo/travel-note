@@ -16,6 +16,7 @@ import card05 from '../../assets/cardImages/card05.jpg'
 // 2. 游记有待审核、已通过、未通过三种状态
 // 3. 未通过审核游记，需展示拒绝原因
 // 4. 实现游记编辑、删除功能。待审核、未通过状态可编辑；所有状态游记可删除
+// 5. 添加一个Fab，点击后跳转到发布页
 
 // 模拟数据
 const mockData = [
@@ -200,14 +201,16 @@ export default function MyNote() {
       ) : (
         <View className="empty-notes">
           <Text className="empty-text">您还没有发布任何游记</Text>
-          <Button 
-            className="create-button"
-            onClick={() => Taro.navigateTo({ url: '/pages/publish/index' })}
-          >
-            去发布
-          </Button>
         </View>
       )}
+
+      {/* 悬浮按钮 FAB */}
+      <View 
+        className="fab-button"
+        onClick={() => Taro.switchTab({ url: '/pages/publish/index' })}
+      >
+        <Text className="fab-icon">+</Text>
+      </View>
     </View>
   );
 }

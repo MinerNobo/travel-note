@@ -178,12 +178,37 @@
   margin-bottom: 26px;
 }
 
-.create-button {
+/* FAB 悬浮按钮样式 */
+.fab-button {
+  position: fixed;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
   background-color: #1890ff;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  transition: all 0.3s ease;
+}
+
+.fab-button:active {
+  transform: translateX(-50%) scale(0.95);
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.4);
+}
+
+.fab-icon {
   color: white;
-  padding: 0 32px;
-  height: 52px;
-  line-height: 52px;
-  border-radius: 26px;
-  font-size: 20px;
+  font-size: 60px;
+  font-weight: bold;
+  line-height: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 3px;
 }
