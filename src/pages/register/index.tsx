@@ -1,11 +1,19 @@
 import { useStore } from "../../store/useStore";
-import { Button, Form, Input, View } from "@tarojs/components";
+import { Button, Form, Input, View, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import { useState } from "react";
+import './index.scss';
 
 export default function Register() {
     const [loading, setLoading] = useState(false);
+    const [name, setName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [password, setPassword] = useState('');
     const { login } = useStore();
+
+    const handleLogin = () => {
+        Taro.navigateBack();
+    }
 
     const handleSubmit = async (e) => {
         const { name, phoneNumber, password } = e.detail.value;
@@ -66,38 +74,60 @@ export default function Register() {
     }
 
     return (
-        <View>
-            <Form onSubmit={handleSubmit}>
-                <View className="form-item">
-                    <Input 
-                        name="name"
-                        type="text"
-                        placeholder="请输入昵称"
-                    />
-                </View>
+        <View className="register-container">
+            <View className="register-content">
+                <Text className="register-title">创建账号</Text>
+                <Text className="register-subtitle">欢迎加入我们!</Text>
 
-                <View>
-                    <Input 
-                        name="phoneNumber"
-                        type="text"
-                        maxlength={11}
-                        placeholder="请输入手机号"
-                    />
-                </View>
+                <Form onSubmit={handleSubmit} className="form-container">
+                    <View className="form-item">
+                        <Input 
+                            className="input-item"
+                            name="name"
+                            type="text"
+                            placeholder="昵称"
+                            value={name}
+                            onInput={e => setName(e.detail.value)}
+                        />
+                    </View>
 
-                <View>
-                    <Input 
-                        name="password"
-                        password
-                        placeholder="请输入密码"
-                        maxlength={16}
-                    />
-                </View>
+                    <View className="form-item">
+                        <Input 
+                            className="input-item"
+                            name="phoneNumber"
+                            type="text"
+                            maxlength={11}
+                            placeholder="手机号码"
+                            value={phoneNumber}
+                            onInput={e => setPhoneNumber(e.detail.value)}
+                        />
+                    </View>
 
-                <Button formType="submit" loading={loading} disabled={loading}>
-                    注册
-                </Button>
-            </Form>
+                    <View className="form-item">
+                        <Input 
+                            className="input-item"
+                            name="password"
+                            password
+                            placeholder="密码"
+                            maxlength={16}
+                            value={password}
+                            onInput={e => setPassword(e.detail.value)}
+                        />
+                    </View>
+
+                    <Button 
+                        className={`register-button ${(loading || !name || !phoneNumber || !password) ? 'button-disabled' : ''}`}
+                        formType="submit" 
+                        loading={loading} 
+                        disabled={loading || !name || !phoneNumber || !password}>
+                        注册
+                    </Button>
+                </Form>
+
+                <View className="login-section">
+                    <Text className="login-text" onClick={handleLogin}>已有账号? 返回登录</Text>
+                </View>
+            </View>
         </View>
     )
 }

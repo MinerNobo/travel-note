@@ -1,6 +1,5 @@
 import { useStore } from "../../store/useStore";
-import { View, Text, Image } from "@tarojs/components";
-import { AtButton } from "taro-ui";
+import { View, Text, Image, Button } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import "./index.scss";
 import avaDefault from '../../assets/avatarImages/avatarDefault.png';
@@ -80,39 +79,55 @@ export default function Mine() {
   }
 
   return (
-    <View>
-      <Text>我的页面</Text>
-
-      <View className="avatar-upload">
+    <View className="page-container">
+      <View className="content-wrapper">
         <View className="avatar-container">
           <Image 
-            src={avatarUrl}
+            src={isLoggedIn ? (user?.avatar || avatarUrl) : avatarUrl}
             className="avatar-image"
             mode="aspectFill"
             onClick={handleChooseImage}
           />
         </View>
+        
+        {isLoggedIn ? (
+          <View className="username">
+            {user?.name || '用户'}
+          </View>
+        ) : (
+          <View className="username">
+            游客
+          </View>
+        )}
+        
+        {isLoggedIn ? (
+          <View className="user-description">
+            欢迎回来，开始您的旅行记录吧！
+          </View>
+        ) : (
+          <View className="user-description">
+            登录后体验更多功能
+          </View>
+        )}
+        
+        <View className="button-container">
+          {!isLoggedIn ? (
+            <Button  
+              className="login-button"
+              onClick={handleClick}
+            >
+              登录/注册
+            </Button>
+          ) : (
+            <Button 
+              className="logout-button login-button"
+              onClick={handleLogout}
+            >
+              退出登录
+            </Button>
+          )}
+        </View>
       </View>
-
-      {!isLoggedIn ? (
-          <AtButton 
-          type="primary" 
-          size="normal"
-          onClick={handleClick}
-          circle
-        >
-          登录/注册
-        </AtButton>
-      ) : (
-          <AtButton 
-            type="secondary" 
-            size="normal"
-            onClick={handleLogout}
-            circle
-          >
-            退出登录
-          </AtButton>
-      )}
     </View>
   );
 }

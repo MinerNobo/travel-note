@@ -2,6 +2,7 @@ import { Input, View, Text, Button } from "@tarojs/components"
 import Taro from "@tarojs/taro";
 import { useState } from "react"
 import { useStore } from "../../store/useStore";
+import './index.scss';
 
 const Login = () => {
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -10,9 +11,16 @@ const Login = () => {
 
     const { login } = useStore();
 
-    const handleClick = () => {
+    const handleRegister = () => {
         Taro.navigateTo({
             url: '/pages/register/index',
+        })
+    }
+
+    const handleForgotPassword = () => {
+        Taro.showToast({
+            title: '忘记密码功能开发中',
+            icon: 'none'
         })
     }
 
@@ -68,37 +76,48 @@ const Login = () => {
         } finally {
             setLoading(false);
         }
-
     }
 
     return (
-        <View>
-            <Input 
-                type="text"
-                maxlength={11}
-                placeholder="请输入手机号"
-                value={phoneNumber}
-                onInput={e => setPhoneNumber(e.detail.value)}
-            />
+        <View className="login-container">
+            <View className="login-content">
+                <Text className="login-title">登录账号</Text>
+                <Text className="login-subtitle">欢迎回来!</Text>
+                
+                <View className="input-group">
+                    <Input 
+                        className="input-item"
+                        type="text"
+                        maxlength={11}
+                        placeholder="手机号码"
+                        value={phoneNumber}
+                        onInput={e => setPhoneNumber(e.detail.value)}
+                    />
 
-            <Input
-                password
-                maxlength={16}
-                placeholder="请输入密码"
-                value={password}
-                onInput={e => setPassword(e.detail.value)}
-            />
+                    <Input
+                        className="input-item"
+                        password
+                        maxlength={16}
+                        placeholder="密码"
+                        value={password}
+                        onInput={e => setPassword(e.detail.value)}
+                    />
+                </View>
 
-            <Button 
-                loading={loading}
-                disabled={loading || !phoneNumber || !password}
-                onClick={handleSubmit}>
-                登录
-            </Button>
+                <Text className="forgot-password" onClick={handleForgotPassword}>忘记密码?</Text>
 
-            <Text>还没有账号?</Text>
-            <Button onClick={handleClick}>注册</Button>
+                <Button 
+                    className={`login-button ${(loading || !phoneNumber || !password) ? 'button-disabled' : ''}`}
+                    loading={loading}
+                    disabled={loading || !phoneNumber || !password}
+                    onClick={handleSubmit}>
+                    登录
+                </Button>
 
+                <View className="register-section">
+                    <Text className="register-text" onClick={handleRegister}>创建新账号</Text>
+                </View>
+            </View>
         </View>
     )
 }
