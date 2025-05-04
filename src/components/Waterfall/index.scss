@@ -9,6 +9,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    // 两栏之间保持一定距离
     &.left-column {
         margin-right: 6px;
     }
@@ -30,7 +31,6 @@
         display: block;
         border-top-left-radius: 8px;
         border-top-right-radius: 8px;
-        object-fit: cover;
     }
 
     .item-title {

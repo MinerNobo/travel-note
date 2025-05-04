@@ -118,7 +118,9 @@ export default function Publish() {
 
   const handleRuleClick = () => {
     Taro.showToast({
-      title: '《规则123》'
+      title: '《规则123》',
+      icon: 'none',
+      duration: 2000,
     })
   }
 

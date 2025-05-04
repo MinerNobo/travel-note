@@ -15,7 +15,6 @@ interface PostItemProps {
 const PostItem = ({ item } : PostItemProps) => {
     return (
         <View className="waterfall-item">
-
             <Image 
                 className="item-image"
                 src={item.imageUrl}

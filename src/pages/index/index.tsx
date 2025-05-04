@@ -7,14 +7,13 @@ import card01 from '../../assets/cardImages/card01.jpg'
 import card02 from '../../assets/cardImages/card02.jpg'
 import card03 from '../../assets/cardImages/card03.jpg'
 import card04 from '../../assets/cardImages/card04.jpg'
+import card05 from '../../assets/cardImages/card05.jpg'
 
 import ava01 from '../../assets/avatarImages/avatar01.jpg'
 import ava02 from '../../assets/avatarImages/avatar02.jpg'
 import ava03 from '../../assets/avatarImages/avatar03.jpg'
 import ava04 from '../../assets/avatarImages/avatar04.jpg'
 import { useEffect, useState } from 'react'
-
-// Todo：瀑布流交错显示
 
 // 示例数据
 const mockData = [
@@ -46,10 +45,9 @@ const mockData = [
     avatar: ava04,
     author: '鹤顶红',
   },
-  // 重复添加数据用于展示瀑布流效果
   {
     id: 5,
-    imageUrl: card02,
+    imageUrl: card05,
     title: '深圳梧桐山徒步攻略',
     avatar: ava02,
     author: '猫猫的城市日记',
@@ -86,7 +84,7 @@ export default function Index() {
   }
 
   const handleClick = () => {
-    setPostData(mockData.filter((item) => item.title.includes(searchValue)));
+    setPostData(mockData.filter((item) => item.title.includes(searchValue) || item.author.includes(searchValue)));
   }
 
   return (
