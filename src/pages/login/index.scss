@@ -48,7 +48,7 @@
 }
 
 .login-title {
-  font-size: 36px;
+  font-size: 40px;
   font-weight: 700;
   color: #304ffe;
   margin-bottom: 16px;
@@ -70,12 +70,12 @@
 
 .input-item {
   width: 100%;
-  height: 64px;
+  height: 75px;
   border-radius: 12px;
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
   padding: 0 20px;
-  font-size: 18px;
+  font-size: 24px;
   color: #333333;
   margin-bottom: 20px;
   transition: border-color 0.3s, box-shadow 0.3s;
@@ -95,7 +95,7 @@
 }
 
 .forgot-password {
-  font-size: 16px;
+  font-size: 20px;
   color: #304ffe;
   text-align: right;
   margin-bottom: 30px;
@@ -104,11 +104,11 @@
 
 .login-button {
   width: 100%;
-  height: 64px;
+  height: 75px;
   border-radius: 12px;
   background-color: #304ffe;
   color: white;
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 600;
   margin-top: 16px;
   margin-bottom: 40px;
@@ -145,7 +145,7 @@
 }
 
 .register-text {
-  font-size: 16px;
+  font-size: 20px;
   color: #666666;
   cursor: pointer;
   text-align: center;

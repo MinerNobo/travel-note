@@ -12,7 +12,9 @@ export default function Register() {
     const { login } = useStore();
 
     const handleLogin = () => {
-        Taro.navigateBack();
+        Taro.navigateTo({
+            url: '/pages/login/index',
+        });
     }
 
     const handleSubmit = async (e) => {

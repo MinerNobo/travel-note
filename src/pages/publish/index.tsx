@@ -32,12 +32,12 @@ export default function Publish() {
         duration: 2000
       });
       
-      // 延迟跳转到登录页面
-      setTimeout(() => {
-        Taro.navigateTo({
-          url: '/pages/login/index',
-        });
-      }, 1500);
+      // 延迟跳转到登录页面，开发阶段先注释掉
+      // setTimeout(() => {
+      //   Taro.navigateTo({
+      //     url: '/pages/login/index',
+      //   });
+      // }, 1500);
     }
   }, [isLoggedIn]);
 
