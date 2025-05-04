@@ -41,7 +41,7 @@ const mockData = [
   {
     id: 4,
     imageUrl: card04,
-    title: '✨ 上海外滩｜一键get氛围感大片',
+    title: '✨ 上海外滩｜一键get氛围感大片，超绝拍照打卡点，快来打卡吧！',
     avatar: ava04,
     author: '鹤顶红',
   },
