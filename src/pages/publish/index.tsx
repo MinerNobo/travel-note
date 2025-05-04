@@ -2,6 +2,8 @@ import { View, Text, Input, Textarea, Button, Image } from "@tarojs/components";
 import { useState } from "react";
 import Taro from "@tarojs/taro";
 import "./index.scss";
+import imageIcon from '../../assets/icons/image.png'
+import videoIcon from '../../assets/icons/video.png'
 
 // 发布页的功能
 // 1. 选择图片（图片可上传多张），视频（最多上传一个）
@@ -15,13 +17,8 @@ export default function Publish() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [images, setImages] = useState<string[]>([]);
-  const [video, setVideo] = useState<string>("");
+  const [video, setVideo] = useState<string[]>([]);
   const [agreed, setAgreed] = useState(false);
-  const [errors, setErrors] = useState<{
-    title?: string;
-    content?: string;
-    images?: string;
-  }>({});
 
   // 选择图片
   const chooseImage = () => {
@@ -38,11 +35,11 @@ export default function Publish() {
   // 选择视频
   const chooseVideo = () => {
     Taro.chooseVideo({
-      sourceType: ["album", "camera"],
-      maxDuration: 60,
-      camera: "back",
+      sourceType: ["album", "camera"], // 相册或者相机拍摄
+      maxDuration: 60, // 最大时长60秒
+      camera: "back", // 默认使用后置摄像头
       success: function (res) {
-        setVideo(res.tempFilePath);
+        setVideo([...video, res.tempFilePath]);
       }
     });
   };
@@ -56,7 +53,7 @@ export default function Publish() {
 
   // 删除视频
   const removeVideo = () => {
-    setVideo("");
+    setVideo([]);
   };
 
   // 表单验证
@@ -75,11 +72,10 @@ export default function Publish() {
       newErrors.content = "内容不能为空";
     }
     
-    if (images.length === 0) {
-      newErrors.images = "请至少上传一张图片";
+    if (images.length === 0 && video.length === 0) {
+      newErrors.images = "请至少上传一张图片或一个视频";
     }
     
-    setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
@@ -127,13 +123,14 @@ export default function Publish() {
   return (
     <View className="publish-page">
       <View className="publish-header">
-        <Text className="header-title">发笔记</Text>
+        <Text className="header-title">分享你的游记吧</Text>
       </View>
 
       <View className="publish-content">
         <View className="media-section">
-          {images.length > 0 ? (
+          {images.length > 0 || video.length > 0 ? (
             <View className="image-list">
+              {/* 已上传的图片列表, 可以删除 */}
               {images.map((img, index) => (
                 <View key={index} className="image-item">
                   <Image src={img} className="preview-image" mode="aspectFill" />
@@ -148,19 +145,33 @@ export default function Publish() {
                   <Text className="upload-text">添加图片</Text>
                 </View>
               )}
+
+              {video.length === 0 ? (
+                <View className="upload-item" onClick={chooseVideo}>
+                  <View className="upload-icon">+</View>
+                  <Text className="upload-text">添加视频</Text>
+                </View>
+              ) : (
+                <View className="image-item">
+                  <Image src={video[0]} className="preview-image" mode="aspectFill" />
+                  <View className="remove-btn" onClick={removeVideo}>
+                    ×
+                  </View>
+                </View>
+              )}
             </View>
           ) : (
             <View className="upload-section">
               <View className="upload-item" onClick={chooseImage}>
                 <View className="upload-icon">
-                  <Image src="https://img.icons8.com/ios/50/000000/image.png" className="icon-image" />
+                  <Image src={imageIcon} className="icon-image" />
                 </View>
                 <Text className="upload-text">添加图片</Text>
               </View>
               
               <View className="upload-item" onClick={chooseVideo}>
                 <View className="upload-icon">
-                  <Image src="https://img.icons8.com/ios/50/000000/video.png" className="icon-video" />
+                  <Image src={videoIcon} className="icon-video" />
                 </View>
                 <Text className="upload-text">添加视频</Text>
               </View>
@@ -186,27 +197,6 @@ export default function Publish() {
             onInput={(e) => setContent(e.detail.value)}
           />
         </View>
-
-        {/* <View className="extras-section">
-          <View className="extra-item">
-            <View className="extra-icon location-icon"></View>
-            <Text className="extra-text">添加地点</Text>
-            <View className="extra-arrow"></View>
-          </View>
-          
-          <View className="extra-item">
-            <View className="extra-icon time-icon"></View>
-            <Text className="extra-text">拍摄时间</Text>
-            <Text className="extra-value">2025-05-04</Text>
-            <View className="extra-arrow"></View>
-          </View>
-          
-          <View className="extra-item">
-            <View className="extra-icon topic-icon"></View>
-            <Text className="extra-text">推荐话题</Text>
-            <View className="extra-arrow"></View>
-          </View>
-        </View> */}
       </View>
 
       <View className="publish-footer">
@@ -220,7 +210,7 @@ export default function Publish() {
           className={`publish-btn ${!agreed ? 'disabled' : ''}`} 
           onClick={agreed ? handlePublish : undefined}
         >
-          发笔记
+          发游记
         </Button>
       </View>
     </View>
