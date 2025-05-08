@@ -42,10 +42,7 @@ const Login = () => {
             }, 1000);
 
         } catch (error) {
-            Taro.showToast({
-                title: '验证失败，请重试',
-                icon: 'none'
-            })
+            console.log(error);
         } finally {
             setLoading(false);
         }
@@ -61,7 +58,7 @@ const Login = () => {
                     <Input 
                         className="input-item"
                         type="text"
-                        maxlength={10}
+                        maxlength={16}
                         placeholder="用户名"
                         value={username}
                         onInput={e => setUsername(e.detail.value)}

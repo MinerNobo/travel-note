@@ -1,5 +1,5 @@
 import { useStore } from "../../store/useStore";
-import { View, Text, Image, Button } from "@tarojs/components";
+import { View, Image, Button } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import "./index.scss";
 import avaDefault from '../../assets/avatarImages/avatarDefault.png';
@@ -8,9 +8,9 @@ import { useState } from "react";
 const defaultImageUrl = avaDefault;
 
 export default function Mine() {
-  const [avatarUrl, setAvatarUrl] = useState(defaultImageUrl);
-
-  const { isLoggedIn, logout, setUser, user } = useStore(); 
+  const { isLoggedIn, logout, setUser, user, accessToken } = useStore();
+  
+  const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || defaultImageUrl);
 
   const handleChooseImage = () => {
     if (!isLoggedIn) {
@@ -41,31 +41,30 @@ export default function Mine() {
 
   // 上传图片到服务器
   const uploadImage = async (filePath: string) => {
-    const res = await Taro.uploadFile({
-      url: 'http://localhost:4000/upload/avatar',
-      filePath: filePath,
+    Taro.uploadFile({
+      url: 'http://localhost:40000/auth/avatar',
+      filePath,
       name: 'avatar',
       header: {
-        'content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${accessToken}`
       },
-      formData: {
-        userId: user?.id,
+      success: (res) => {
+        const data = JSON.parse(res.data);
+        setUser(data);
+        setAvatarUrl(data.avatarUrl);
+        Taro.showToast({
+          title: '头像上传成功',
+          icon: 'success'
+        });
+        console.log(data);
+      },
+      fail: (err) => {
+        Taro.showToast({
+          title: '头像上传失败',
+          icon: 'none'
+        });
       }
-    })
-    if (res.statusCode === 200) {
-      const userData = res.data.data;
-      setAvatarUrl(userData.avatar);
-      setUser(userData);
-      Taro.showToast({
-        title: '头像上传成功',
-        icon: 'success'
-      });
-    } else {
-      Taro.showToast({
-        title: '头像上传失败',
-        icon: 'none'
-      });
-    }
+  })
   }
 
   const handleClick = () => {
@@ -83,7 +82,7 @@ export default function Mine() {
       <View className="content-wrapper">
         <View className="avatar-container">
           <Image 
-            src={isLoggedIn ? (user?.avatar || avatarUrl) : avatarUrl}
+            src={avatarUrl}
             className="avatar-image"
             mode="aspectFill"
             onClick={handleChooseImage}
@@ -92,7 +91,7 @@ export default function Mine() {
         
         {isLoggedIn ? (
           <View className="username">
-            {user?.name || '用户'}
+            {user.username || '用户'}
           </View>
         ) : (
           <View className="username">

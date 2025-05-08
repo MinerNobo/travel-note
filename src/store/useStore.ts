@@ -3,9 +3,11 @@ import { create } from "zustand"
 
 interface User {
     id: string;
-    name: string;
-    phoneNumber: string;
-    avatar: string;
+    username: string;
+    role: string;
+    avatarUrl: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export const useStore = create((set) => ({
@@ -15,12 +17,15 @@ export const useStore = create((set) => ({
 
     setAccessToken: (accessToken: string) => {
         Taro.setStorageSync('accessToken', accessToken);
+        set({ accessToken });
     },
     setUser: (user: User) => {
         Taro.setStorageSync('user', user);
+        set({ user });
     },
     setIsLoggedIn: (isLoggedIn: boolean) => {
         Taro.setStorageSync('isLoggedIn', isLoggedIn);
+        set({ isLoggedIn });
     },
     logout: () => {
         Taro.removeStorageSync('accessToken');

@@ -29,11 +29,11 @@ const request = async (options) => {
         }
     } catch (error) {
         Taro.showToast({
-            title: '请求失败，请稍后重试',
+            title: error.message || '请求失败，请稍后重试',
             icon: 'none',
             duration: 2000
         });
-        throw error;    
+        throw error;
     }
 }
 

@@ -3,13 +3,13 @@ import { Button, Form, Input, View, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import { useState } from "react";
 import './index.scss';
+import { register } from "../../api/user";
 
 export default function Register() {
     const [loading, setLoading] = useState(false);
-    const [name, setName] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const { login } = useStore();
+    const { setAccessToken, setIsLoggedIn, setUser } = useStore();
 
     const handleLogin = () => {
         Taro.navigateTo({
@@ -18,58 +18,27 @@ export default function Register() {
     }
 
     const handleSubmit = async (e) => {
-        const { name, phoneNumber, password } = e.detail.value;
-
-        if (!name || !phoneNumber || !password) {
-            Taro.showToast({
-                title: "请填写所有字段",
-                icon: "none"
-            })
-            return;
-        }
-
-        if (!/^1[3-9]\d{9}$/.test(phoneNumber)) {
-            Taro.showToast({
-                title: "请输入正确手机号",
-                icon: "none",
-            })
-            return;
-        }
+        const { username, password } = e.detail.value;
 
         try {
             setLoading(true);
 
-            const res = await Taro.request({
-                url: "http://localhost:4000/auth/register",
-                method: "POST",
-                data: { name, phoneNumber, password},
-            });
+            const res = await register(username, password);
 
-            if (res.statusCode === 200) {
-                const userData = res.data.data;
+            setAccessToken(res.access_token);
+            setIsLoggedIn(true);
+            setUser(res.user);
 
-                login({
-                    id: userData.id,
-                    name: userData.name,
-                    phoneNumber: userData.phoneNumber,
-                    avatar: userData.avatar || '',
-                })
-
-                Taro.showToast({
-                    title: "注册成功",
-                    icon: 'success',
-                })
-
-                Taro.switchTab({
-                    url: '/pages/mine/index',
-                })
-            }
-            
-        } catch (error) {
             Taro.showToast({
-                title: "注册失败请重试",
-                icon: 'none',
+                title: "注册成功",
+                icon: 'success',
             })
+
+            setTimeout(() => {
+                Taro.switchTab({ url: '/pages/mine/index' })
+            }, 1000);
+        } catch (error) {
+            console.log(error);
         } finally {
             setLoading(false);
         }
@@ -85,23 +54,11 @@ export default function Register() {
                     <View className="form-item">
                         <Input 
                             className="input-item"
-                            name="name"
+                            name="username"
                             type="text"
                             placeholder="昵称"
-                            value={name}
-                            onInput={e => setName(e.detail.value)}
-                        />
-                    </View>
-
-                    <View className="form-item">
-                        <Input 
-                            className="input-item"
-                            name="phoneNumber"
-                            type="text"
-                            maxlength={11}
-                            placeholder="手机号码"
-                            value={phoneNumber}
-                            onInput={e => setPhoneNumber(e.detail.value)}
+                            value={username}
+                            onInput={e => setUsername(e.detail.value)}
                         />
                     </View>
 
@@ -118,10 +75,10 @@ export default function Register() {
                     </View>
 
                     <Button 
-                        className={`register-button ${(loading || !name || !phoneNumber || !password) ? 'button-disabled' : ''}`}
+                        className={`register-button ${(loading || !username || !password) ? 'button-disabled' : ''}`}
                         formType="submit" 
                         loading={loading} 
-                        disabled={loading || !name || !phoneNumber || !password}>
+                        disabled={loading || !username || !password}>
                         注册
                     </Button>
                 </Form>

@@ -9,3 +9,12 @@ export const login = (username: string, password: string) => request({
         password,
     },
 });
+
+export const register = (username: string, password: string) => request({
+    url: "/auth/register",
+    method: "POST",
+    data: {
+        username,
+        password,
+    },
+})
