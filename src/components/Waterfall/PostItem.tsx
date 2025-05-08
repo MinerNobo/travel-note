@@ -1,4 +1,5 @@
 import { Image, View, Text } from "@tarojs/components"
+import Taro from '@tarojs/taro'
 
 export interface Post {
     id: number,
@@ -13,8 +14,15 @@ interface PostItemProps {
 }
 
 const PostItem = ({ item } : PostItemProps) => {
+    const handleClick = () => {
+        // 跳转到详情页，并传递id参数
+        Taro.navigateTo({
+            url: `/pages/detail/index?id=${item.id}`
+        })
+    }
+
     return (
-        <View className="waterfall-item">
+        <View className="waterfall-item" onClick={handleClick}>
             <Image 
                 className="item-image"
                 src={item.imageUrl}

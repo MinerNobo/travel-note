@@ -1,6 +1,5 @@
 import Taro from "@tarojs/taro";
 import { create } from "zustand"
-import { persist } from "zustand/middleware"
 
 interface User {
     id: string;
@@ -9,31 +8,28 @@ interface User {
     avatar: string;
 }
 
-interface AuthStore {
-    user: User | null;
-    isLoggedIn: boolean;
+export const useStore = create((set) => ({
+    accessToken: Taro.getStorageSync('accessToken') || null,
+    user: Taro.getStorageSync('user') || null,
+    isLoggedIn: Taro.getStorageSync('isLoggedIn') || false,
 
-    login: (userData: any) => void;
-    logout: () => void;
-    setUser: (userData: User | null) => void;
-}
-
-export const useStore = create<AuthStore>()(
-    persist(
-        (set) => ({
+    setAccessToken: (accessToken: string) => {
+        Taro.setStorageSync('accessToken', accessToken);
+    },
+    setUser: (user: User) => {
+        Taro.setStorageSync('user', user);
+    },
+    setIsLoggedIn: (isLoggedIn: boolean) => {
+        Taro.setStorageSync('isLoggedIn', isLoggedIn);
+    },
+    logout: () => {
+        Taro.removeStorageSync('accessToken');
+        Taro.removeStorageSync('user');
+        Taro.removeStorageSync('isLoggedIn');
+        set({
+            accessToken: null,
             user: null,
             isLoggedIn: false,
-            login: (userData) => set({ user: userData, isLoggedIn: true}),
-            logout: () => set({ user: null, isLoggedIn: false}),
-            setUser: (userData) => set({ user: userData }),
-        }),
-        {
-            name: 'auth-store', // 键名
-            storage: {
-                getItem: (key) => Taro.getStorageSync(key),
-                setItem: (key, value) => Taro.setStorageSync(key, value),
-                removeItem: (key) => Taro.removeStorageSync(key),
-            },
-        }
-    )
-)
+        });
+    },
+}))
