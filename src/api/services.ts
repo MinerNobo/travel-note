@@ -28,4 +28,8 @@ export const createNote = (data: any) => request({
 export const getNoteById = (id: string) => request({
     url: `/notes/${id}`,
 })
+
+export const getApprovedNotes = () => request({
+    url: "/notes/approved",
+})
     

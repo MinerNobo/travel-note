@@ -3,10 +3,14 @@ import Taro from '@tarojs/taro'
 
 export interface Post {
     id: number,
-    imageUrl: string,
     title: string,
-    author: string,
-    avatar: string,
+    imageUrl: string,
+    content: string,
+    author: {
+        id: number,
+        username: string,
+        avatarUrl: string,
+    }
 }
 
 interface PostItemProps {
@@ -34,9 +38,9 @@ const PostItem = ({ item } : PostItemProps) => {
             <View className="item-author">
                 <Image 
                     className="author-avatar"
-                    src={item.avatar}
+                    src={item.author.avatarUrl}
                 />
-                <Text className="author-name">{item.author}</Text>
+                <Text className="author-name">{item.author.username}</Text>
             </View>
         </View>
     )

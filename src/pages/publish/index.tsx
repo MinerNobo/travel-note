@@ -22,7 +22,7 @@ export default function Publish() {
   const [video, setVideo] = useState<string[]>([]);
   const [agreed, setAgreed] = useState(false);
 
-  const { user, isLoggedIn, myNotes, setMyNotes } = useStore();
+  const { user, isLoggedIn, myNotes, setMyNotes, accessToken } = useStore();
 
   // 页面加载时检查登录状态
   useEffect(() => {
@@ -132,17 +132,17 @@ export default function Publish() {
             filePath: images[i],
             name: "file",
             header: {
-              "content-Type": "multipart/form-data"
+              "content-Type": "multipart/form-data",
+              'Authorization': `Bearer ${accessToken}`
             }
           });
           console.log(res);
           if (res.statusCode === 201) {
             const data = JSON.parse(res.data);
             const imageUrl = data.url;
-            console.log(imageUrl);
             imagePosts.push({
               type: "IMAGE",
-              url: imageUrl,
+              url: 'http://localhost:40000' + imageUrl,
             });
           } else {
             console.log(res);
@@ -159,7 +159,8 @@ export default function Publish() {
           filePath: video[0],
           name: "file",
           header: {
-            "content-Type": "multipart/form-data"
+            "content-Type": "multipart/form-data",
+            'Authorization': `Bearer ${accessToken}`
           }
         });
 
@@ -168,8 +169,8 @@ export default function Publish() {
           console.log(data);
           videoPost = {
             type: "VIDEO", 
-            url: data.url.videoUrl,
-            thumbnail: data.url.thumbnailUrl,
+            url: 'http://localhost:40000' + data.url.videoUrl,
+            thumbnail: 'http://localhost:40000' + data.url.thumbnailUrl,
           };
         } else {
           throw new Error("视频上传失败");

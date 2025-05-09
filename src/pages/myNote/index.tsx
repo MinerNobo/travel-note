@@ -13,7 +13,7 @@ import { getNoteById } from "../../api/services";
 // 5. 添加一个Fab，点击后跳转到发布页
 
 export default function MyNote() {
-  const { isLoggedIn, user, myNotes, setMyNotes } = useStore();
+  const { isLoggedIn, user, myNotes, setMyNotes, accessToken } = useStore();
   const [notes, setNotes] = useState([]);
   
   useEffect(() => {
@@ -66,6 +66,9 @@ export default function MyNote() {
           Taro.request({
             url: 'http://localhost:40000/notes/' + id,
             method: 'DELETE',
+            header: {
+              'Authorization': `Bearer ${accessToken}`
+            },
             success: () => {
               Taro.showToast({
                 title: '删除成功',
@@ -126,7 +129,7 @@ export default function MyNote() {
                       </Text>
                     </View>
                     
-                    <Text className="note-date">{note.createdAt}</Text>
+                    <Text className="note-date">{note.createdAt.slice(0, 10)}</Text>
                     
                     <View className="note-preview">
                       <Text className="preview-text">{note.content.substring(0, 80)}...</Text>
