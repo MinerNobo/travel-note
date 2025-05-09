@@ -22,7 +22,7 @@ export default function Publish() {
   const [video, setVideo] = useState<string[]>([]);
   const [agreed, setAgreed] = useState(false);
 
-  const { user, isLoggedIn, myNotes, setMyNotes, accessToken } = useStore();
+  const { user, isLoggedIn, accessToken } = useStore();
 
   // 页面加载时检查登录状态
   useEffect(() => {
@@ -136,7 +136,6 @@ export default function Publish() {
               'Authorization': `Bearer ${accessToken}`
             }
           });
-          console.log(res);
           if (res.statusCode === 201) {
             const data = JSON.parse(res.data);
             const imageUrl = data.url;
@@ -166,7 +165,6 @@ export default function Publish() {
 
         if (res.statusCode === 201) {
           const data = JSON.parse(res.data);
-          console.log(data);
           videoPost = {
             type: "VIDEO", 
             url: 'http://localhost:40000' + data.url.videoUrl,
@@ -178,7 +176,6 @@ export default function Publish() {
       }
       
       const media = [...imagePosts];
-      console.log(media);
       if (videoPost) {
         media.push(videoPost);
       }
@@ -189,7 +186,7 @@ export default function Publish() {
         content,
         media,
       }
-
+      console.log(postData);
       const res = await createNote(postData);
       console.log(res);
       Taro.showToast({
@@ -202,7 +199,6 @@ export default function Publish() {
       setContent("");
       setImages([]);
       setVideo([]);
-      setMyNotes([...myNotes, res.id]);
       Taro.switchTab({
         url: '/pages/myNote/index',
       })

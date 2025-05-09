@@ -8,12 +8,27 @@ import { getApprovedNotes } from '../../api/services'
 export default function Index() {
   const [searchValue, setSearchValue] = useState('');
   const [postData, setPostData] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const pageSize = 10;
 
   useEffect(() => {
-    getApprovedNotes().then((res) => {
-      setPostData(res.data);
-    })
+    loadData(1);
   }, [])
+
+  const loadData = (pageNum: number) => {
+    getApprovedNotes(pageNum, pageSize).then((res) => {
+      const newData = res.data || [];
+      if (newData.length < pageSize) {
+        setHasMore(false);
+      }
+      
+      if (pageNum === 1) {
+        setPostData(newData);
+      } else {
+        setPostData([...postData, ...newData]);
+      }
+    })
+  }
 
   const handleChange = (value: string) => {
     setSearchValue(value);
@@ -21,7 +36,6 @@ export default function Index() {
 
   const handleClick = () => {
     setPostData(postData.filter((item) => item.title.includes(searchValue) || item.author.username.includes(searchValue)));
-
   }
 
   return (

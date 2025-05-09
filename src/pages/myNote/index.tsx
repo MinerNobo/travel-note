@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import Taro from "@tarojs/taro";
 import { useStore } from "../../store/useStore";
 import "./index.scss";
-import { getNoteById } from "../../api/services";
+import { getMyNotes } from "../../api/services";
+import { formatDate } from "../../utils/dateFormat";
 
 // 我的笔记页面功能：
 // 1. 展示当前登录用户发布的游记列表
@@ -13,40 +14,16 @@ import { getNoteById } from "../../api/services";
 // 5. 添加一个Fab，点击后跳转到发布页
 
 export default function MyNote() {
-  const { isLoggedIn, user, myNotes, setMyNotes, accessToken } = useStore();
+  const { isLoggedIn, user, accessToken } = useStore();
   const [notes, setNotes] = useState([]);
   
   useEffect(() => {
-    // 通过状态中的myNotes，获取游记列表
-    if (isLoggedIn && myNotes && myNotes.length > 0) {
-
-      const fetchNotes = async () => {
-        try {
-          const notesPromises = myNotes.map(noteId => getNoteById(noteId));
-          const notesResults = await Promise.all(notesPromises);
-          setNotes(notesResults);
-        } catch (error) {
-          Taro.showToast({
-            title: '获取游记失败' + error.message,
-            icon: 'none',
-            duration: 2000
-          });
-        }
-      }
-      fetchNotes();
-    } else if (!isLoggedIn) {
-      Taro.showToast({
-        title: '请先登录',
-        icon: 'none',
-        duration: 2000
-      });
-      setTimeout(() => {
-        Taro.navigateTo({
-          url: '/pages/login/index'
-        });
-      }, 2000);
+    if (isLoggedIn) {
+      getMyNotes().then((res) => {
+        setNotes(res.data);
+      })
     }
-  }, [isLoggedIn, user, myNotes]);
+  }, [isLoggedIn, user, notes]);
 
   // 编辑游记
   const handleEdit = (id: string) => {
@@ -75,7 +52,7 @@ export default function MyNote() {
                 icon: 'success'
               });
               // 更新游记列表
-              setMyNotes(myNotes.filter(noteId => noteId !== id));
+              setNotes(notes.filter(noteId => noteId !== id));
             },
             fail: () => { 
               Taro.showToast({
@@ -129,7 +106,7 @@ export default function MyNote() {
                       </Text>
                     </View>
                     
-                    <Text className="note-date">{note.createdAt.slice(0, 10)}</Text>
+                    <Text className="note-date">{formatDate(note.createdAt)}</Text>
                     
                     <View className="note-preview">
                       <Text className="preview-text">{note.content.substring(0, 80)}...</Text>

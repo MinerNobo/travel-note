@@ -3,14 +3,22 @@ import { View, Image, Button } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import "./index.scss";
 import avaDefault from '../../assets/avatarImages/avatarDefault.png';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const defaultImageUrl = avaDefault;
 
 export default function Mine() {
   const { isLoggedIn, logout, setUser, user, accessToken } = useStore();
   
-  const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || defaultImageUrl);
+  const [avatarUrl, setAvatarUrl] = useState('');
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setAvatarUrl(user.avatarUrl);
+    } else {
+      setAvatarUrl(defaultImageUrl);
+    }
+  }, [isLoggedIn, user]);
 
   const handleChooseImage = () => {
     if (!isLoggedIn) {
@@ -55,6 +63,20 @@ export default function Mine() {
           ...user,
           avatarUrl: 'http://localhost:40000' + data.url
         });
+        try {
+          Taro.request({
+            url: 'http://localhost:40000/auth/avatar',
+            method: 'PATCH',
+            header: {
+              'Authorization': `Bearer ${accessToken}`
+            },
+            data: {
+              avatarUrl: 'http://localhost:40000' + data.url
+            }
+          })
+        } catch (error) {
+          console.log(error);
+        }
 
         Taro.showToast({
           title: '头像上传成功',
@@ -78,6 +100,7 @@ export default function Mine() {
 
   const handleLogout = () => {
     logout();
+    setAvatarUrl(defaultImageUrl);
   }
 
   return (

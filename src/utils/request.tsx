@@ -3,7 +3,7 @@ import Taro from "@tarojs/taro";
 const baseUrl = "http://localhost:40000";
 // 封装请求
 const request = async (options) => {
-    const { url, method = 'GET', data, header = {} } = options;
+    const { url, method = 'GET', data={}, header = {} } = options;
     const token = Taro.getStorageSync('accessToken');
 
     // 设置请求头，加上token

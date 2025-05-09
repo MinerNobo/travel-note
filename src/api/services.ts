@@ -29,7 +29,11 @@ export const getNoteById = (id: string) => request({
     url: `/notes/${id}`,
 })
 
-export const getApprovedNotes = () => request({
-    url: "/notes/approved",
+export const getApprovedNotes = (page: number, pageSize: number) => request({
+    url: `/notes/approved?page=${page}&pageSize=${pageSize}`,
 })
-    
+
+export const getMyNotes = () => request({
+    url: `/notes/my`,
+})
+

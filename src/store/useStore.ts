@@ -14,7 +14,6 @@ export const useStore = create((set) => ({
     accessToken: Taro.getStorageSync('accessToken') || null,
     user: Taro.getStorageSync('user') || null,
     isLoggedIn: Taro.getStorageSync('isLoggedIn') || false,
-    myNotes: Taro.getStorageSync('myNotes') || [],
 
     setAccessToken: (accessToken: string) => {
         Taro.setStorageSync('accessToken', accessToken);
@@ -28,10 +27,7 @@ export const useStore = create((set) => ({
         Taro.setStorageSync('isLoggedIn', isLoggedIn);
         set({ isLoggedIn });
     },
-    setMyNotes: (notes: any) => {
-        Taro.setStorageSync('myNotes', notes);
-        set({ myNotes: notes });
-    },
+
     logout: () => {
         Taro.removeStorageSync('accessToken');
         Taro.removeStorageSync('user');

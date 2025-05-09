@@ -2,12 +2,12 @@ import { Image, View, Text } from "@tarojs/components"
 import Taro from '@tarojs/taro'
 
 export interface Post {
-    id: number,
+    id: string,
     title: string,
     imageUrl: string,
     content: string,
     author: {
-        id: number,
+        id: string,
         username: string,
         avatarUrl: string,
     }
