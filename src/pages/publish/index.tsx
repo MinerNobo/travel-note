@@ -22,7 +22,7 @@ export default function Publish() {
   const [video, setVideo] = useState<string[]>([]);
   const [agreed, setAgreed] = useState(false);
 
-  const { user, isLoggedIn } = useStore();
+  const { user, isLoggedIn, myNotes, setMyNotes } = useStore();
 
   // 页面加载时检查登录状态
   useEffect(() => {
@@ -201,6 +201,7 @@ export default function Publish() {
       setContent("");
       setImages([]);
       setVideo([]);
+      setMyNotes([...myNotes, res.id]);
       Taro.switchTab({
         url: '/pages/myNote/index',
       })

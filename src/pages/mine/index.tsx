@@ -50,14 +50,11 @@ export default function Mine() {
       },
       success: (res) => {
         const data = JSON.parse(res.data);
-        console.log(data);
-        setUser(data);
-        setAvatarUrl(data.avatarUrl);
+        setAvatarUrl(data.url);
         Taro.showToast({
           title: '头像上传成功',
           icon: 'success'
         });
-        console.log(data);
       },
       fail: (err) => {
         Taro.showToast({

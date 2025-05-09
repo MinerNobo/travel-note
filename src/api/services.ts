@@ -24,3 +24,8 @@ export const createNote = (data: any) => request({
     method: "POST",
     data,
 })
+
+export const getNoteById = (id: string) => request({
+    url: `/notes/${id}`,
+})
+    
