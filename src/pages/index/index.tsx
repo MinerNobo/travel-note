@@ -7,7 +7,7 @@ import { getApprovedNotes } from '../../api/services'
 import Taro, { usePullDownRefresh, useReachBottom } from '@tarojs/taro'
 
 export default function Index() {
-  const [searchValue, setSearchValue] = useState('');
+  const [keyword, setKeyword] = useState('');
   const [postData, setPostData] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageNum, setPageNum] = useState(1);
@@ -33,7 +33,7 @@ export default function Index() {
 
   const loadData = (page: number) => {
     setIsLoading(true);
-    getApprovedNotes(page, pageSize).then((res) => {
+    getApprovedNotes(page, pageSize, keyword).then((res) => {
       const newData = res.data || [];
       if (newData.length < pageSize) {
         setHasMore(false);
@@ -61,17 +61,14 @@ export default function Index() {
   }
 
   const handleChange = (value: string) => {
-    setSearchValue(value);
+    setKeyword(value);
   }
 
   const handleClick = () => {
     // 搜索时重置分页状态
-    if (searchValue.trim()) {
-      setPostData(postData.filter((item) => item.title.includes(searchValue) || item.author.username.includes(searchValue)));
-      setHasMore(false); // 搜索结果不需要继续加载
-    } else {
-      // 搜索框为空时，重新加载第一页数据
-      loadData(1);
+    if (keyword.trim()) {
+       // 搜索结果不需要继续加载
+       loadData(1);
     }
   }
 
@@ -79,7 +76,7 @@ export default function Index() {
     <View className='index'>
 
       <AtSearchBar 
-        value={searchValue}
+        value={keyword}
         onChange={handleChange}
         onActionClick={handleClick}
       />
