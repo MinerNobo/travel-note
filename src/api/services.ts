@@ -37,3 +37,9 @@ export const getMyNotes = () => request({
     url: `/notes/my`,
 })
 
+export const updateNote = (id: string, data: any) => request({
+    url: `/notes/${id}`,
+    method: "PATCH", 
+    data,
+})
+

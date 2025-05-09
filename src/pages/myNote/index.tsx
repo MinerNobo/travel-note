@@ -27,9 +27,8 @@ export default function MyNote() {
 
   // 编辑游记
   const handleEdit = (id: string) => {
-    Taro.showToast({
-      title: '功能开发中',
-      icon: 'none'
+    Taro.navigateTo({
+      url: `/pages/edit/index?id=${id}`
     });
   };
 
