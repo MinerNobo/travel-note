@@ -42,14 +42,15 @@ export default function Mine() {
   // 上传图片到服务器
   const uploadImage = async (filePath: string) => {
     Taro.uploadFile({
-      url: 'http://localhost:40000/auth/avatar',
+      url: 'http://localhost:40000/upload/image',
       filePath,
-      name: 'avatar',
+      name: 'file',
       header: {
         'Authorization': `Bearer ${accessToken}`
       },
       success: (res) => {
         const data = JSON.parse(res.data);
+        console.log(data);
         setUser(data);
         setAvatarUrl(data.avatarUrl);
         Taro.showToast({

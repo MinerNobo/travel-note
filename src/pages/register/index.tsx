@@ -3,7 +3,7 @@ import { Button, Form, Input, View, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import { useState } from "react";
 import './index.scss';
-import { register } from "../../api/user";
+import { register } from "../../api/services";
 
 export default function Register() {
     const [loading, setLoading] = useState(false);

@@ -3,7 +3,7 @@ import Taro from "@tarojs/taro";
 import { useState } from "react"
 import { useStore } from "../../store/useStore";
 import './index.scss';
-import { login } from "../../api/user";
+import { login } from "../../api/services";
 
 const Login = () => {
     const [username, setUsername] = useState('');

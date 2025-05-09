@@ -18,3 +18,9 @@ export const register = (username: string, password: string) => request({
         password,
     },
 })
+
+export const createNote = (data: any) => request({
+    url: "/notes",
+    method: "POST",
+    data,
+})

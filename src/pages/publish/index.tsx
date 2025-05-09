@@ -5,6 +5,7 @@ import "./index.scss";
 import imageIcon from '../../assets/icons/image.png'
 import videoIcon from '../../assets/icons/video.png'
 import { useStore } from "../../store/useStore";
+import { createNote } from "../../api/services";
 // 发布页的功能
 // 1. 选择图片（图片可上传多张），视频（最多上传一个）
 // 2. 输入标题
@@ -32,12 +33,11 @@ export default function Publish() {
         duration: 2000
       });
       
-      // 延迟跳转到登录页面，开发阶段先注释掉
-      // setTimeout(() => {
-      //   Taro.navigateTo({
-      //     url: '/pages/login/index',
-      //   });
-      // }, 1500);
+    setTimeout(() => {
+      Taro.navigateTo({
+        url: '/pages/login/index',
+      });
+    }, 1500);
     }
   }, [isLoggedIn]);
 
@@ -109,14 +109,6 @@ export default function Publish() {
         icon: "none",
         duration: 2000
       });
-      
-      // 延迟跳转到登录页面
-      setTimeout(() => {
-        Taro.navigateTo({
-          url: '/pages/login/index',
-        });
-      }, 1500);
-      
       return;
     }
     
@@ -132,90 +124,90 @@ export default function Publish() {
 
     try {
       // 1. 先上传图片，拿到imageUrls
-      const imageUrls = [];
+      const imagePosts = [];
       if (images.length > 0) {
         for (let i = 0; i < images.length; i++) {
-          const imageRes = await Taro.uploadFile({
-            url: "http://localhost:4000/upload/image",
+          const res = await Taro.uploadFile({
+            url: "http://localhost:40000/upload/image",
             filePath: images[i],
-            name: "image",
+            name: "file",
             header: {
               "content-Type": "multipart/form-data"
             }
           });
-          
-          if (imageRes.statusCode === 200) {
-            const data = imageRes.data;
-            imageUrls.push(data.url);
+          console.log(res);
+          if (res.statusCode === 201) {
+            const data = JSON.parse(res.data);
+            const imageUrl = data.url;
+            console.log(imageUrl);
+            imagePosts.push({
+              type: "IMAGE",
+              url: imageUrl,
+            });
           } else {
+            console.log(res);
             throw new Error("图片上传失败");
           }
         }
       }
 
       // 2. 上传视频，拿到videoUrl  
-      let videoUrl = "";
+      let videoPost;
       if (video.length > 0) {
-        const videoRes = await Taro.uploadFile({
-          url: "http://localhost:4000/upload/video",
+        const res = await Taro.uploadFile({
+          url: "http://localhost:40000/upload/video",
           filePath: video[0],
-          name: "video",
+          name: "file",
           header: {
             "content-Type": "multipart/form-data"
           }
         });
 
-        if (videoRes.statusCode === 200) {
-          const data = videoRes.data;
-          videoUrl = data.url;
+        if (res.statusCode === 201) {
+          const data = JSON.parse(res.data);
+          console.log(data);
+          videoPost = {
+            type: "VIDEO", 
+            url: data.url.videoUrl,
+            thumbnail: data.url.thumbnailUrl,
+          };
         } else {
           throw new Error("视频上传失败");
         }
       }
+      
+      const media = [...imagePosts];
+      console.log(media);
+      if (videoPost) {
+        media.push(videoPost);
+      }
 
       // 3. 发布游记内容
-      const postRes = await Taro.request({
-        url: "http://localhost:4000/travel-notes",
-        method: "POST",
-        data: {
-          title,
-          content,
-          userId: user.id,
-          images: imageUrls,
-          video: videoUrl
-        },
-        header: {
-          "content-type": "application/json"
-        }
-      });
-
-      if (postRes.statusCode === 200) {
-        const travelNoteId = postRes.data.id;
-        
-        Taro.hideLoading();
-        Taro.showToast({
-          title: "发布成功",
-          icon: "success",
-          duration: 2000,
-          success: () => {
-            // 发布成功后跳转到首页
-            setTimeout(() => {
-              Taro.navigateTo({
-                url: '/pages/index/index',
-              });
-            }, 1000);
-          }
-        });
-      } else {
-        throw new Error(postRes.data.message || "发布失败");
+      const postData = {
+        title,
+        content,
+        media,
       }
-    } catch (error: Error | unknown) {
-      Taro.hideLoading();
+
+      const res = await createNote(postData);
+      console.log(res);
       Taro.showToast({
-        title: error instanceof Error ? error.message : "发布失败，请重试",
-        icon: "none",
-        duration: 2000
-      });
+        title: "发布成功",
+        icon: "success",
+        duration: 2000,
+      })
+      setTitle("");
+      setAgreed(false);
+      setContent("");
+      setImages([]);
+      setVideo([]);
+      Taro.switchTab({
+        url: '/pages/myNote/index',
+      })
+    } catch (error) {
+      console.error("发布失败", error);
+    } finally {
+      Taro.hideLoading();
     }
   };
 
