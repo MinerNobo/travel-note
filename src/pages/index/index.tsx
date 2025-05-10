@@ -35,10 +35,23 @@ export default function Index() {
     setIsLoading(true);
     getApprovedNotes(page, pageSize, keyword).then((res) => {
       const newData = res.data || [];
+      
       if (newData.length < pageSize) {
         setHasMore(false);
       } else {
         setHasMore(true);
+      }
+      // 因为304缓存，可能拿到的数据和之前一样，需要手动根据关键词筛选
+      if (JSON.stringify(newData) === JSON.stringify(postData)) {
+        const filteredData = postData.filter(item => 
+          item.title.includes(keyword) || 
+          (item.author.username.includes(keyword))
+        );
+        setPostData(filteredData);
+        setHasMore(false);
+        setPageNum(1);
+        setIsLoading(false);
+        return;
       }
       
       if (page === 1) {
@@ -65,12 +78,8 @@ export default function Index() {
   }
 
   const handleClick = () => {
-    console.log(postData);
     // 搜索时重置分页状态
-    if (keyword.trim()) {
-       // 搜索结果不需要继续加载
-       loadData(1);
-    }
+    loadData(1);
   }
 
   return (
