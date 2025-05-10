@@ -12,6 +12,7 @@ import Taro, { useShareAppMessage } from '@tarojs/taro';
 import { useEffect, useState } from 'react';
 import { formatDate } from '../../utils/dateFormat';
 
+const baseUrl = 'http://localhost:40000';
 const Detail = () => {
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -83,15 +84,13 @@ const Detail = () => {
   const imageMedia = post.media.filter(item => item.type === 'IMAGE');
   const allMedia = videoMedia ? [videoMedia, ...imageMedia] : imageMedia;
 
-  // TODO：现在没办法通过authorId拿到作者信息，需要一个接口
-
   return (
     <View className="detail-container">
       {/* 作者信息 */}
       <View className="author-section">
         <Image 
           className="author-avatar" 
-          src={post.author.avatarUrl} 
+          src={baseUrl + post.author.avatarUrl} 
           mode="aspectFill" 
         />
         <View className="author-info">
@@ -121,18 +120,18 @@ const Detail = () => {
                   <View className="video-wrapper">
                     <Video
                       className="video"
-                      src={item.url}
+                      src={baseUrl + item.url}
                       controls
                       showFullscreenBtn
-                      poster={item.thumbnailUrl}
+                      poster={baseUrl + item.thumbnailUrl}
                     />
                   </View>
                 ) : (
                   <Image
                     className="slide-image"
-                    src={item.url}
+                    src={baseUrl + item.url}
                     mode="aspectFill"
-                    onClick={() => handleImageClick(item.url)}
+                    onClick={() => handleImageClick(baseUrl + item.url)}
                   />
                 )}
               </SwiperItem>

@@ -17,6 +17,7 @@ interface PostItemProps {
     item: Post,
 }
 
+const baseUrl = 'http://localhost:40000';
 const PostItem = ({ item } : PostItemProps) => {
     const handleClick = () => {
         // 跳转到详情页，并传递id参数
@@ -29,7 +30,7 @@ const PostItem = ({ item } : PostItemProps) => {
         <View className="waterfall-item" onClick={handleClick}>
             <Image 
                 className="item-image"
-                src={item.imageUrl}
+                src={baseUrl + item.imageUrl}
                 mode="widthFix"
             />
 
@@ -38,7 +39,7 @@ const PostItem = ({ item } : PostItemProps) => {
             <View className="item-author">
                 <Image 
                     className="author-avatar"
-                    src={item.author.avatarUrl}
+                    src={baseUrl + item.author.avatarUrl}
                 />
                 <Text className="author-name">{item.author.username}</Text>
             </View>

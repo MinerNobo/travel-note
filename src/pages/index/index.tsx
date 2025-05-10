@@ -65,6 +65,7 @@ export default function Index() {
   }
 
   const handleClick = () => {
+    console.log(postData);
     // 搜索时重置分页状态
     if (keyword.trim()) {
        // 搜索结果不需要继续加载

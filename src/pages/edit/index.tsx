@@ -14,6 +14,8 @@ import { getNoteById, updateNote } from "../../api/services";
 // 4. 更新游记
 // 5. 更新成功后返回我的游记页面
 
+const baseUrl = 'http://localhost:40000';
+
 export default function Edit() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -206,7 +208,7 @@ export default function Edit() {
             const imageUrl = data.url;
             media.push({
               type: "IMAGE",
-              url: 'http://localhost:40000' + imageUrl,
+              url: imageUrl,
             });
           } else {
             throw new Error("图片上传失败");
@@ -230,8 +232,8 @@ export default function Edit() {
           const data = JSON.parse(res.data);
           const videoPost = {
             type: "VIDEO", 
-            url: 'http://localhost:40000' + data.url.videoUrl,
-            thumbnail: 'http://localhost:40000' + data.url.thumbnailUrl,
+            url: data.url.videoUrl,
+            thumbnail: data.url.thumbnailUrl,
           };
           media.push(videoPost);
         } else {
@@ -291,7 +293,7 @@ export default function Edit() {
               {/* 显示原有图片 */}
               {imageUrls.map((img, index) => (
                 <View key={`url-${index}`} className="image-item">
-                  <Image src={img.url} className="preview-image" mode="aspectFill" />
+                  <Image src={baseUrl + img.url} className="preview-image" mode="aspectFill" />
                   <View className="remove-btn" onClick={() => removeImageUrl(index)}>
                     ×
                   </View>

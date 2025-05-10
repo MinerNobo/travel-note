@@ -13,6 +13,8 @@ import { formatDate } from "../../utils/dateFormat";
 // 4. 实现游记编辑、删除功能。待审核、未通过状态可编辑；所有状态游记可删除
 // 5. 添加一个Fab，点击后跳转到发布页
 
+const baseUrl = 'http://localhost:40000';
+
 export default function MyNote() {
   const { isLoggedIn, user, accessToken } = useStore();
   const [notes, setNotes] = useState([]);
@@ -92,7 +94,7 @@ export default function MyNote() {
                   <View className="note-cover">
                     <Image 
                       className="cover-image" 
-                      src={note.media[0].url} 
+                      src={baseUrl + note.media[0].url} 
                       mode="aspectFill" 
                     />
                   </View>

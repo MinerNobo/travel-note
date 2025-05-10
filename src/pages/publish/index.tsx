@@ -141,7 +141,7 @@ export default function Publish() {
             const imageUrl = data.url;
             imagePosts.push({
               type: "IMAGE",
-              url: 'http://localhost:40000' + imageUrl,
+              url: imageUrl,
             });
           } else {
             console.log(res);
@@ -167,8 +167,8 @@ export default function Publish() {
           const data = JSON.parse(res.data);
           videoPost = {
             type: "VIDEO", 
-            url: 'http://localhost:40000' + data.url.videoUrl,
-            thumbnail: 'http://localhost:40000' + data.url.thumbnailUrl,
+            url: data.url.videoUrl,
+            thumbnail: data.url.thumbnailUrl,
           };
         } else {
           throw new Error("视频上传失败");

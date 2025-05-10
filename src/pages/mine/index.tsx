@@ -6,6 +6,7 @@ import avaDefault from '../../assets/avatarImages/avatarDefault.png';
 import { useState, useEffect } from "react";
 
 const defaultImageUrl = avaDefault;
+const baseUrl = 'http://localhost:40000';
 
 export default function Mine() {
   const { isLoggedIn, logout, setUser, user, accessToken } = useStore();
@@ -18,7 +19,7 @@ export default function Mine() {
     } else {
       setAvatarUrl(defaultImageUrl);
     }
-  }, [isLoggedIn, user]);
+  }, [isLoggedIn, user, avatarUrl]);
 
   const handleChooseImage = () => {
     if (!isLoggedIn) {
@@ -58,11 +59,6 @@ export default function Mine() {
       },
       success: (res) => {
         const data = JSON.parse(res.data);
-        setAvatarUrl('http://localhost:40000' + data.url);
-        setUser({
-          ...user,
-          avatarUrl: 'http://localhost:40000' + data.url
-        });
         try {
           Taro.request({
             url: 'http://localhost:40000/auth/avatar',
@@ -71,17 +67,23 @@ export default function Mine() {
               'Authorization': `Bearer ${accessToken}`
             },
             data: {
-              avatarUrl: 'http://localhost:40000' + data.url
+              avatarUrl: data.url
             }
           })
+          setUser({
+            ...user,
+            avatarUrl: data.url
+          });
+          setAvatarUrl(data.url);
+          Taro.showToast({
+            title: '头像上传成功',
+            icon: 'success'
+          });
+
         } catch (error) {
           console.log(error);
         }
 
-        Taro.showToast({
-          title: '头像上传成功',
-          icon: 'success'
-        });
       },
       fail: (err) => {
         Taro.showToast({
@@ -108,7 +110,7 @@ export default function Mine() {
       <View className="content-wrapper">
         <View className="avatar-container">
           <Image 
-            src={avatarUrl}
+            src={baseUrl + avatarUrl}
             className="avatar-image"
             mode="aspectFill"
             onClick={handleChooseImage}
