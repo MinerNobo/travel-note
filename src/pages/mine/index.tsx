@@ -4,6 +4,7 @@ import Taro from "@tarojs/taro";
 import "./index.scss";
 import avaDefault from '../../assets/avatarImages/avatarDefault.png';
 import { useState, useEffect } from "react";
+import { TravelMap } from "../../components";
 
 const defaultImageUrl = avaDefault;
 const baseUrl = 'http://localhost:40000';
@@ -154,6 +155,14 @@ export default function Mine() {
             </Button>
           )}
         </View>
+
+        {/* 足迹地图组件 */}
+        {isLoggedIn && user && accessToken && (
+          <TravelMap 
+            userId={user.id} 
+            accessToken={accessToken}
+          />
+        )}
       </View>
     </View>
   );

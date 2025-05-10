@@ -39,4 +39,14 @@ export default defineAppConfig({
       },
     ],
   },
+  // 添加定位API所需的权限声明
+  requiredPrivateInfos: [
+    "getLocation",
+    "chooseLocation"
+  ],
+  permission: {
+    "scope.userLocation": {
+      desc: "您的位置信息将用于城市打卡功能"
+    }
+  }
 });
