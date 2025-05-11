@@ -2,7 +2,7 @@ import { View, Text, Map, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useEffect, useState } from 'react';
 import './index.scss';
-import locationIcon from '../../assets/icons/locationIcon.png'; // 请确保这个图标文件存在
+import locationIcon from '../../assets/icons/locationIcon.png';
 
 interface TravelMapProps {
   userId: string;
@@ -41,16 +41,21 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
         const { latitude, longitude } = res;
         setLocation({ latitude, longitude });
         
-        // 逆地理编码，获取城市名称
+        // 使用腾讯地图WebService API获取城市名称
         Taro.request({
-          url: `http://localhost:40000/map/geocode?latitude=${latitude}&longitude=${longitude}`,
-          header: {
-            'Authorization': `Bearer ${accessToken}`
+          url: 'https://apis.map.qq.com/ws/geocoder/v1/',
+          data: {
+            location: `${latitude},${longitude}`,
+            key: 'YZPBZ-6J4L7-QWGXC-HLP7P-FU535-KVFMO',
+            get_poi: 0
           },
           success: function (res) {
-            if (res.statusCode === 200 && res.data.city) {
-              setCurrentCity(res.data.city);
+            if (res.statusCode === 200 && res.data.status === 0) {
+              const cityName = res.data.result.address_component.city;
+              setCurrentCity(cityName);
               setShowCheckInButton(true);
+            } else {
+              console.log('腾讯地图API获取城市失败', res);
             }
           },
           fail: function () {
@@ -61,9 +66,9 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
           }
         });
       },
-      fail: function () {
+      fail: () => {
         Taro.showToast({
-          title: '获取位置失败',
+          title: '获取位置信息失败',
           icon: 'none'
         });
       }
@@ -74,7 +79,7 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
   const fetchCheckInRecords = () => {
     setLoading(true);
     Taro.request({
-      url: `http://localhost:40000/checkin/user/${userId}`,
+      url: `http://localhost:40000/checkin`,
       header: {
         'Authorization': `Bearer ${accessToken}`
       },
@@ -148,7 +153,6 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
     });
   };
 
-  // 处理地图加载错误
   const handleMapError = () => {
     Taro.showToast({
       title: '地图加载失败',
@@ -193,7 +197,6 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
       </View>
       
       <View className='checkin-list'>
-        <Text className='section-title'>打卡城市</Text>
         <View className='city-list'>
           {checkInRecords.length > 0 ? (
             checkInRecords.map(record => (
