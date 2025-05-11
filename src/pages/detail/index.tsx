@@ -1,18 +1,12 @@
 import './index.scss'
 import { View, Text, Image, Swiper, SwiperItem, Video, Button } from '@tarojs/components';
 import { getNoteById } from '../../api/services';
-// 获取路由参数拿到note id
-// 根据note id获取note详情
-// 展示note详情， 包括作者昵称，头像等
-// 图片可以左右滑动查看，可以放大查看原图
-// 如果有视频的话，视频位于图片列表第一项，点击后进入全屏播放
-// 支持游记分享功能，比如分享到微信
-
 import Taro, { useShareAppMessage } from '@tarojs/taro';
 import { useEffect, useState } from 'react';
 import { formatDate } from '../../utils/dateFormat';
 
-const baseUrl = 'http://localhost:40000';
+const baseUrl = process.env.TARO_APP_API;
+
 const Detail = () => {
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);

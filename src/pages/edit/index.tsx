@@ -7,14 +7,7 @@ import videoIcon from '../../assets/icons/video.png'
 import { useStore } from "../../store/useStore";
 import { getNoteById, updateNote } from "../../api/services";
 
-// 编辑页的功能
-// 1. 获取原有游记数据
-// 2. 编辑标题、内容
-// 3. 编辑图片（可添加、删除）和视频
-// 4. 更新游记
-// 5. 更新成功后返回我的游记页面
-
-const baseUrl = 'http://localhost:40000';
+const baseUrl = process.env.TARO_APP_API;
 
 export default function Edit() {
   const [title, setTitle] = useState("");
@@ -195,7 +188,7 @@ export default function Edit() {
       if (images.length > 0) {
         for (let i = 0; i < images.length; i++) {
           const res = await Taro.uploadFile({
-            url: "http://localhost:40000/upload/image",
+            url: `${baseUrl}/upload/image`,
             filePath: images[i],
             name: "file",
             header: {
@@ -219,7 +212,7 @@ export default function Edit() {
       // 2. 处理视频，如果有新的视频则上传  
       if (video.length > 0) {
         const res = await Taro.uploadFile({
-          url: "http://localhost:40000/upload/video",
+          url: `${baseUrl}/upload/video`,
           filePath: video[0],
           name: "file",
           header: {

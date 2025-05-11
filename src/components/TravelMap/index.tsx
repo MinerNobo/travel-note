@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import './index.scss';
 import locationIcon from '../../assets/icons/locationIcon.png';
 
+const baseUrl = process.env.TARO_APP_API;
+
 interface TravelMapProps {
   userId: string;
   accessToken: string;
@@ -79,7 +81,7 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
   const fetchCheckInRecords = () => {
     setLoading(true);
     Taro.request({
-      url: `http://localhost:40000/checkin`,
+      url: `${baseUrl}/checkin`,
       header: {
         'Authorization': `Bearer ${accessToken}`
       },
@@ -105,7 +107,7 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
     Taro.showLoading({ title: '打卡中...' });
     
     Taro.request({
-      url: 'http://localhost:40000/checkin',
+      url: `${baseUrl}/checkin`,
       method: 'POST',
       data: {
         cityName: currentCity,

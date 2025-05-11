@@ -1,6 +1,5 @@
 import { Image, View, Text } from "@tarojs/components"
 import Taro from '@tarojs/taro'
-
 export interface Post {
     id: string,
     title: string,
@@ -13,11 +12,12 @@ export interface Post {
     }
 }
 
+const baseUrl = process.env.TARO_APP_API;
+
 interface PostItemProps {
     item: Post,
 }
 
-const baseUrl = 'http://localhost:40000';
 const PostItem = ({ item } : PostItemProps) => {
     const handleClick = () => {
         // 跳转到详情页，并传递id参数

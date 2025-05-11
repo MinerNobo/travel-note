@@ -1,6 +1,6 @@
 import Taro from "@tarojs/taro";
 
-const baseUrl = "http://localhost:40000";
+const baseUrl = process.env.TARO_APP_API;
 // 封装请求
 const request = async (options) => {
     const { url, method = 'GET', data={}, header = {} } = options;

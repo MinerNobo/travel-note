@@ -6,14 +6,8 @@ import imageIcon from '../../assets/icons/image.png'
 import videoIcon from '../../assets/icons/video.png'
 import { useStore } from "../../store/useStore";
 import { createNote } from "../../api/services";
-// 发布页的功能
-// 1. 选择图片（图片可上传多张），视频（最多上传一个）
-// 2. 输入标题
-// 3. 输入内容
-// 4. 发布
-// 5. 发布成功后，跳转到游记详情页
-// 6. 对发布的内容必须做校验，标题，内容， 图片是必须的
-// 7. 接口上，先上传照片和视频，拿到imageUrls和videoUrl，然后发布游记
+
+const baseUrl = process.env.TARO_APP_API;
 
 export default function Publish() {
   const [title, setTitle] = useState("");
@@ -128,7 +122,7 @@ export default function Publish() {
       if (images.length > 0) {
         for (let i = 0; i < images.length; i++) {
           const res = await Taro.uploadFile({
-            url: "http://localhost:40000/upload/image",
+            url: `${baseUrl}/upload/image`,
             filePath: images[i],
             name: "file",
             header: {
@@ -154,7 +148,7 @@ export default function Publish() {
       let videoPost;
       if (video.length > 0) {
         const res = await Taro.uploadFile({
-          url: "http://localhost:40000/upload/video",
+          url: `${baseUrl}/upload/video`,
           filePath: video[0],
           name: "file",
           header: {

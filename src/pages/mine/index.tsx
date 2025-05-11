@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { TravelMap } from "../../components";
 
 const defaultImageUrl = avaDefault;
-const baseUrl = 'http://localhost:40000';
+const baseUrl = process.env.TARO_APP_API;
 
 export default function Mine() {
   const { isLoggedIn, logout, setUser, user, accessToken } = useStore();
@@ -52,7 +52,7 @@ export default function Mine() {
   // 上传图片到服务器
   const uploadImage = async (filePath: string) => {
     Taro.uploadFile({
-      url: 'http://localhost:40000/upload/image',
+      url: `${baseUrl}/upload/image`,
       filePath,
       name: 'file',
       header: {
@@ -62,7 +62,7 @@ export default function Mine() {
         const data = JSON.parse(res.data);
         try {
           Taro.request({
-            url: 'http://localhost:40000/auth/avatar',
+            url: `${baseUrl}/auth/avatar`,
             method: 'PATCH',
             header: {
               'Authorization': `Bearer ${accessToken}`

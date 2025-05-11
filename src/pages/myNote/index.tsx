@@ -6,14 +6,7 @@ import "./index.scss";
 import { getMyNotes } from "../../api/services";
 import { formatDate } from "../../utils/dateFormat";
 
-// 我的笔记页面功能：
-// 1. 展示当前登录用户发布的游记列表
-// 2. 游记有待审核、已通过、未通过三种状态
-// 3. 未通过审核游记，需展示拒绝原因
-// 4. 实现游记编辑、删除功能。待审核、未通过状态可编辑；所有状态游记可删除
-// 5. 添加一个Fab，点击后跳转到发布页
-
-const baseUrl = 'http://localhost:40000';
+const baseUrl = process.env.TARO_APP_API;
 
 export default function MyNote() {
   const { isLoggedIn, user, accessToken } = useStore();
@@ -42,7 +35,7 @@ export default function MyNote() {
       success: function (res) {
         if (res.confirm) {
           Taro.request({
-            url: 'http://localhost:40000/notes/' + id,
+            url: `${baseUrl}/notes/${id}`,
             method: 'DELETE',
             header: {
               'Authorization': `Bearer ${accessToken}`
