@@ -26,12 +26,6 @@ export default function Publish() {
         icon: "none",
         duration: 2000
       });
-      
-    setTimeout(() => {
-      Taro.navigateTo({
-        url: '/pages/login/index',
-      });
-    }, 1500);
     }
   }, [isLoggedIn]);
 
