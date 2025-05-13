@@ -1,6 +1,6 @@
 import { View, Text, Image, Button } from "@tarojs/components";
 import { useState, useEffect } from "react";
-import Taro from "@tarojs/taro";
+import Taro, { usePullDownRefresh } from "@tarojs/taro";
 import { useStore } from "../../store/useStore";
 import "./index.scss";
 import { getMyNotes } from "../../api/services";
@@ -30,13 +30,24 @@ export default function MyNote() {
   const { isLoggedIn, user, accessToken } = useStore();
   const [notes, setNotes] = useState<Note[]>([]);
   
-  useEffect(() => {
+  const fetchNotes = () => {
     if (isLoggedIn) {
       getMyNotes().then((res) => {
         setNotes(res.data);
-      })
+        Taro.stopPullDownRefresh();
+      }).catch(() => {
+        Taro.stopPullDownRefresh();
+      });
     }
-  }, [isLoggedIn, user, notes]);
+  };
+  
+  useEffect(() => {
+    fetchNotes();
+  }, [isLoggedIn, user]);
+
+  usePullDownRefresh(() => {
+    fetchNotes();
+  });
 
   const handleEdit = (id: string) => {
     Taro.navigateTo({
@@ -97,20 +108,22 @@ export default function MyNote() {
             const statusInfo = getStatusInfo(note.status);
             return (
               <View key={note.id} className="note-item">
+                <View className="note-status-container">
+                  <Text className={`note-status ${statusInfo.className}`}>
+                    {statusInfo.text}
+                  </Text>
+                </View>
                 <View className="note-info">
                   <View className="note-cover">
                     <Image 
                       className="cover-image" 
                       src={baseUrl + (note.media[0].type === 'IMAGE' ? note.media[0].url : note.media[0].thumbnailUrl || '')} 
-                      mode="aspectFill" 
+                      mode="aspectFill"
                     />
                   </View>
                   <View className="note-content">
                     <View className="note-header">
                       <Text className="note-title">{note.title}</Text>
-                      <Text className={`note-status ${statusInfo.className}`}>
-                        {statusInfo.text}
-                      </Text>
                     </View>
                     
                     <Text className="note-date">{formatDate(note.createdAt)}</Text>

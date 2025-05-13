@@ -18,13 +18,6 @@ const Login = () => {
         })
     }
 
-    const handleForgotPassword = () => {
-        Taro.showToast({
-            title: '忘记密码功能开发中',
-            icon: 'none'
-        })
-    }
-
     const handleSubmit = async () => {
         try {
             setLoading(true);
@@ -73,8 +66,6 @@ const Login = () => {
                         onInput={e => setPassword(e.detail.value)}
                     />
                 </View>
-
-                <Text className="forgot-password" onClick={handleForgotPassword}>忘记密码?</Text>
 
                 <Button 
                     className={`login-button ${(loading || !username || !password) ? 'button-disabled' : ''}`}

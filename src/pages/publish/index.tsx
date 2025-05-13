@@ -21,6 +21,7 @@ export default function Publish() {
   const [images, setImages] = useState<string[]>([]);
   const [video, setVideo] = useState<string[]>([]);
   const [agreed, setAgreed] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { user, isLoggedIn, accessToken } = useStore();
 
@@ -121,6 +122,7 @@ export default function Publish() {
       return;
     }
 
+    setLoading(true);
     Taro.showLoading({ title: "发布中..." });
 
     try {
@@ -201,16 +203,9 @@ export default function Publish() {
       console.error("发布失败", error);
     } finally {
       Taro.hideLoading();
+      setLoading(false);
     }
   };
-
-  const handleRuleClick = () => {
-    Taro.showToast({
-      title: '《规则123》',
-      icon: 'none',
-      duration: 2000,
-    })
-  }
 
   return (
     <View className="publish-page">
@@ -270,7 +265,7 @@ export default function Publish() {
         <View className="title-section">
           <Input 
             className="title-input" 
-            placeholder="你的笔记离火就差个标题了~" 
+            placeholder="给你的笔记起一个吸引人的名字吧～" 
             value={title}
             onInput={(e) => setTitle(e.detail.value)}
           />
@@ -279,9 +274,9 @@ export default function Publish() {
         <View className="content-section">
           <Textarea
             className="content-textarea"
-            placeholder="分享你的旅行故事，最多3000字"
+            placeholder="分享你的旅行故事，最多1000字"
             value={content}
-            maxlength={3000}
+            maxlength={1000}
             onInput={(e) => setContent(e.detail.value)}
           />
         </View>
@@ -291,14 +286,14 @@ export default function Publish() {
         <View className="agreement-section">
           <View className={`checkbox ${agreed ? 'checked' : ''}`} onClick={() => setAgreed(!agreed)}></View>
           <Text className="agreement-text">勾选表示已阅读并同意</Text>
-          <Text className="agreement-link" onClick={handleRuleClick}>《携程社区发布规则》</Text>
+          <Text className="agreement-link">《携程社区发布规则》</Text>
         </View>
         
         <Button 
-          className={`publish-btn ${!agreed ? 'disabled' : ''}`} 
-          onClick={agreed ? handlePublish : undefined}
+          className={`publish-btn ${(!agreed || loading) ? 'disabled' : ''}`} 
+          onClick={(agreed && !loading) ? handlePublish : undefined}
         >
-          发游记
+          {loading ? '发布中...' : '发游记'}
         </Button>
       </View>
     </View>

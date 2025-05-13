@@ -49,8 +49,6 @@
 
 .note-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: 12px;
 }
 
@@ -58,8 +56,8 @@
   font-size: 26px;
   font-weight: bold;
   color: #333;
-  flex: 1;
-  margin-right: 14px;
+  width: 100%;
+  padding-right: 80px; /* 为状态标签留出空间 */
   /* 文本超出省略 */
   overflow: hidden;
   text-overflow: ellipsis;
@@ -211,4 +209,11 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 3px;
+}
+
+.note-status-container {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
 }
