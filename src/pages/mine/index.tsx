@@ -2,11 +2,10 @@ import { useStore } from "../../store/useStore";
 import { View, Image, Button } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import "./index.scss";
-import avaDefault from '../../assets/avatarImages/avatarDefault.png';
 import { useState, useEffect } from "react";
 import { TravelMap } from "../../components";
 
-const defaultImageUrl = avaDefault;
+const defaultImageUrl = '/uploads/images/default-avatar.png';
 const baseUrl = process.env.TARO_APP_API;
 
 export default function Mine() {
@@ -15,7 +14,7 @@ export default function Mine() {
   const [avatarUrl, setAvatarUrl] = useState('');
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && user) {
       setAvatarUrl(user.avatarUrl);
     } else {
       setAvatarUrl(defaultImageUrl);
@@ -51,8 +50,10 @@ export default function Mine() {
 
   // 上传图片到服务器
   const uploadImage = async (filePath: string) => {
+    if (!user || !accessToken) return;
+
     Taro.uploadFile({
-      url: `${baseUrl}/upload/image`,
+      url: `${baseUrl}/api/upload/image`,
       filePath,
       name: 'file',
       header: {
@@ -62,7 +63,7 @@ export default function Mine() {
         const data = JSON.parse(res.data);
         try {
           Taro.request({
-            url: `${baseUrl}/auth/avatar`,
+            url: `${baseUrl}/api/auth/avatar`,
             method: 'PATCH',
             header: {
               'Authorization': `Bearer ${accessToken}`
@@ -118,7 +119,7 @@ export default function Mine() {
           />
         </View>
         
-        {isLoggedIn ? (
+        {isLoggedIn && user ? (
           <View className="username">
             {user.username || '用户'}
           </View>

@@ -8,9 +8,27 @@ import { formatDate } from "../../utils/dateFormat";
 
 const baseUrl = process.env.TARO_APP_API;
 
+interface MediaItem {
+  id: string;
+  type: "IMAGE" | "VIDEO";
+  url: string;
+  thumbnailUrl: string | null;
+}
+
+interface Note {
+  id: string;
+  title: string;
+  content: string;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  rejectReason?: string;
+  media: MediaItem[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 export default function MyNote() {
   const { isLoggedIn, user, accessToken } = useStore();
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState<Note[]>([]);
   
   useEffect(() => {
     if (isLoggedIn) {
@@ -35,7 +53,7 @@ export default function MyNote() {
       success: function (res) {
         if (res.confirm) {
           Taro.request({
-            url: `${baseUrl}/notes/${id}`,
+            url: `${baseUrl}/api/notes/${id}`,
             method: 'DELETE',
             header: {
               'Authorization': `Bearer ${accessToken}`
@@ -46,7 +64,7 @@ export default function MyNote() {
                 icon: 'success'
               });
               // 更新游记列表
-              setNotes(notes.filter(noteId => noteId !== id));
+              setNotes(notes.filter(note => note.id !== id));
             },
             fail: () => { 
               Taro.showToast({

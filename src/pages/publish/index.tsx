@@ -9,6 +9,12 @@ import { createNote } from "../../api/services";
 
 const baseUrl = process.env.TARO_APP_API;
 
+interface MediaItem {
+  type: "IMAGE" | "VIDEO";
+  url: string;
+  thumbnail?: string;
+}
+
 export default function Publish() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -31,6 +37,14 @@ export default function Publish() {
 
   // 选择图片
   const chooseImage = () => {
+    if (!isLoggedIn) {
+      Taro.showToast({
+        title: "请先登录",
+        icon: "none",
+        duration: 2000
+      });
+      return;
+    }
     Taro.chooseImage({
       count: 9 - images.length, // 最多9张图片
       sizeType: ["compressed"],
@@ -43,10 +57,17 @@ export default function Publish() {
 
   // 选择视频
   const chooseVideo = () => {
+    if (!isLoggedIn) {
+      Taro.showToast({
+        title: "请先登录",
+        icon: "none",
+        duration: 2000
+      });
+      return;
+    }
     Taro.chooseVideo({
       sourceType: ["album", "camera"], // 相册或者相机拍摄
       maxDuration: 60, // 最大时长60秒
-      camera: "back", // 默认使用后置摄像头
       success: function (res) {
         setVideo([...video, res.tempFilePath]);
       }
@@ -112,11 +133,11 @@ export default function Publish() {
 
     try {
       // 1. 先上传图片，拿到imageUrls
-      const imagePosts = [];
+      const imagePosts: MediaItem[] = [];
       if (images.length > 0) {
         for (let i = 0; i < images.length; i++) {
           const res = await Taro.uploadFile({
-            url: `${baseUrl}/upload/image`,
+            url: `${baseUrl}/api/upload/image`,
             filePath: images[i],
             name: "file",
             header: {
@@ -139,10 +160,10 @@ export default function Publish() {
       }
 
       // 2. 上传视频，拿到videoUrl  
-      let videoPost;
+      let videoPost: MediaItem | undefined;
       if (video.length > 0) {
         const res = await Taro.uploadFile({
-          url: `${baseUrl}/upload/video`,
+          url: `${baseUrl}/api/upload/video`,
           filePath: video[0],
           name: "file",
           header: {
@@ -163,7 +184,7 @@ export default function Publish() {
         }
       }
       
-      const media = [...imagePosts];
+      const media: MediaItem[] = [...imagePosts];
       if (videoPost) {
         media.push(videoPost);
       }

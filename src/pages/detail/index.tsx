@@ -5,10 +5,33 @@ import Taro, { useShareAppMessage } from '@tarojs/taro';
 import { useEffect, useState } from 'react';
 import { formatDate } from '../../utils/dateFormat';
 
-const baseUrl = process.env.TARO_APP_API;
+const baseUrl = process.env.TARO_APP_API
+
+interface MediaItem {
+  id: string;
+  type: "IMAGE" | "VIDEO";
+  url: string;
+  thumbnailUrl: string | null;
+}
+
+interface Note {
+  id: string;
+  title: string;
+  content: string;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  rejectReason?: string;
+  media: MediaItem[];
+  createdAt: string;
+  updatedAt: string;
+  author: {
+    id: string;
+    username: string;
+    avatarUrl: string;
+  };
+}
 
 const Detail = () => {
-  const [post, setPost] = useState(null);
+  const [post, setPost] = useState<Note | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showFullscreen, setShowFullscreen] = useState(false);
@@ -37,7 +60,6 @@ const Detail = () => {
     }
   }, []);
 
-  // 设置分享功能
   useShareAppMessage(() => {
     if (!post) return {};
     return {
@@ -46,13 +68,11 @@ const Detail = () => {
     };
   });
 
-  // 处理图片点击，打开全屏预览
   const handleImageClick = (url: string) => {
     setFullscreenImage(url);
     setShowFullscreen(true);
   };
 
-  // 关闭全屏预览
   const handleCloseFullscreen = () => {
     setShowFullscreen(false);
   };
@@ -73,7 +93,6 @@ const Detail = () => {
     );
   }
 
-  // 分离视频和图片
   const videoMedia = post.media.find(item => item.type === 'VIDEO');
   const imageMedia = post.media.filter(item => item.type === 'IMAGE');
   const allMedia = videoMedia ? [videoMedia, ...imageMedia] : imageMedia;
@@ -93,12 +112,10 @@ const Detail = () => {
         </View>
       </View>
 
-      {/* 标题 */}
       <View className="title-section">
         <Text className="title">{post.title}</Text>
       </View>
 
-      {/* 图片/视频轮播 */}
       {allMedia.length > 0 && (
         <View className="image-section">
           <Swiper
@@ -137,12 +154,10 @@ const Detail = () => {
         </View>
       )}
 
-      {/* 内容 */}
       <View className="content-section">
         <Text className="content">{post.content}</Text>
       </View>
 
-      {/* 全屏预览 */}
       {showFullscreen && (
         <View className="fullscreen-container" onClick={handleCloseFullscreen}>
           <Image

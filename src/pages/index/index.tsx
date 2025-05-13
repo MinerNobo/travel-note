@@ -5,10 +5,11 @@ import { AtSearchBar, AtLoadMore } from 'taro-ui'
 import { useEffect, useState } from 'react'
 import { getApprovedNotes } from '../../api/services'
 import Taro, { usePullDownRefresh, useReachBottom } from '@tarojs/taro'
+import { Post } from '../../components/Waterfall/PostItem'
 
 export default function Index() {
   const [keyword, setKeyword] = useState('');
-  const [postData, setPostData] = useState([]);
+  const [postData, setPostData] = useState<Post[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageNum, setPageNum] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -18,14 +19,12 @@ export default function Index() {
     loadData(1);
   }, [])
 
-  // 使用Taro的钩子函数监听页面触底
   useReachBottom(() => {
     if (hasMore && !isLoading) {
       loadMore();
     }
   });
 
-  // 下拉刷新
   usePullDownRefresh(() => {
     loadData(1);
     Taro.stopPullDownRefresh();
@@ -34,14 +33,14 @@ export default function Index() {
   const loadData = (page: number) => {
     setIsLoading(true);
     getApprovedNotes(page, pageSize, keyword).then((res) => {
-      const newData = res.data || [];
+      const newData = res.data || [] as Post[];
       
       if (newData.length < pageSize) {
         setHasMore(false);
       } else {
         setHasMore(true);
       }
-      // 因为304缓存，可能拿到的数据和之前一样，需要手动根据关键词筛选
+
       if (JSON.stringify(newData) === JSON.stringify(postData)) {
         const filteredData = postData.filter(item => 
           item.title.includes(keyword) || 

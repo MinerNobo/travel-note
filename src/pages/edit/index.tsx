@@ -25,7 +25,6 @@ export default function Edit() {
     user: any;
   };
 
-  // 获取游记ID并加载游记数据
   useEffect(() => {
     const instance = Taro.getCurrentInstance();
     const id = instance.router?.params.id || '';
@@ -45,24 +44,19 @@ export default function Edit() {
     }
   }, []);
 
-  // 加载游记数据
   const loadNoteData = async (id: string) => {
     try {
       setLoading(true);
       const res = await getNoteById(id);
       
-      // 设置标题和内容
       setTitle(res.title);
       setContent(res.content);
       
-      // 处理媒体资源
       const imageMedia = res.media.filter(item => item.type === 'IMAGE');
       const videoMedia = res.media.find(item => item.type === 'VIDEO');
       
-      // 保存原有的图片URL
       setImageUrls(imageMedia);
       
-      // 保存原有的视频URL
       if (videoMedia) {
         setVideoUrl(videoMedia);
       }
@@ -81,10 +75,9 @@ export default function Edit() {
     }
   };
 
-  // 选择图片
   const chooseImage = () => {
     Taro.chooseImage({
-      count: 9 - (images.length + imageUrls.length), // 最多9张图片
+      count: 9 - (images.length + imageUrls.length), 
       sizeType: ["compressed"],
       sourceType: ["album", "camera"],
       success: function (res) {
@@ -93,9 +86,7 @@ export default function Edit() {
     });
   };
 
-  // 选择视频
   const chooseVideo = () => {
-    // 如果已有视频，先删除
     if (videoUrl || video.length > 0) {
       removeVideo();
     }
@@ -110,27 +101,23 @@ export default function Edit() {
     });
   };
 
-  // 删除新选择的图片
   const removeImage = (index: number) => {
     const newImages = [...images];
     newImages.splice(index, 1);
     setImages(newImages);
   };
 
-  // 删除原有的图片
   const removeImageUrl = (index: number) => {
     const newImageUrls = [...imageUrls];
     newImageUrls.splice(index, 1);
     setImageUrls(newImageUrls);
   };
 
-  // 删除视频
   const removeVideo = () => {
     setVideo([]);
     setVideoUrl(null);
   };
 
-  // 表单验证
   const validate = () => {
     const newErrors: {
       title?: string;
@@ -162,9 +149,7 @@ export default function Edit() {
     return true;
   };
 
-  // 更新游记
   const handleUpdate = async () => {
-    // 检查用户是否登录
     if (!isLoggedIn) {
       Taro.showToast({
         title: "请先登录",
@@ -181,14 +166,12 @@ export default function Edit() {
     Taro.showLoading({ title: "更新中..." });
 
     try {
-      // 处理媒体资源，保留原有的和上传新的
       const media = [...imageUrls];
       
-      // 1. 上传新选择的图片
       if (images.length > 0) {
         for (let i = 0; i < images.length; i++) {
           const res = await Taro.uploadFile({
-            url: `${baseUrl}/upload/image`,
+            url: `${baseUrl}/api/upload/image`,
             filePath: images[i],
             name: "file",
             header: {
@@ -212,7 +195,7 @@ export default function Edit() {
       // 2. 处理视频，如果有新的视频则上传  
       if (video.length > 0) {
         const res = await Taro.uploadFile({
-          url: `${baseUrl}/upload/video`,
+          url: `${baseUrl}/api/upload/video`,
           filePath: video[0],
           name: "file",
           header: {
@@ -283,7 +266,6 @@ export default function Edit() {
         <View className="media-section">
           {(images.length > 0 || imageUrls.length > 0 || video.length > 0 || videoUrl) ? (
             <View className="image-list">
-              {/* 显示原有图片 */}
               {imageUrls.map((img, index) => (
                 <View key={`url-${index}`} className="image-item">
                   <Image src={baseUrl + img.url} className="preview-image" mode="aspectFill" />
@@ -293,7 +275,6 @@ export default function Edit() {
                 </View>
               ))}
               
-              {/* 显示新选择的图片 */}
               {images.map((img, index) => (
                 <View key={`new-${index}`} className="image-item">
                   <Image src={img} className="preview-image" mode="aspectFill" />
@@ -303,7 +284,6 @@ export default function Edit() {
                 </View>
               ))}
               
-              {/* 添加图片按钮 */}
               {(images.length + imageUrls.length) < 9 && (
                 <View className="upload-item" onClick={chooseImage}>
                   <View className="upload-icon">+</View>
@@ -311,7 +291,6 @@ export default function Edit() {
                 </View>
               )}
 
-              {/* 显示原有视频 */}
               {videoUrl && !video.length && (
                 <View className="image-item">
                   <Image src={videoUrl.thumbnail} className="preview-image" mode="aspectFill" />
@@ -321,7 +300,6 @@ export default function Edit() {
                 </View>
               )}
 
-              {/* 显示新选择的视频 */}
               {video.length > 0 && (
                 <View className="image-item">
                   <Image src={video[0]} className="preview-image" mode="aspectFill" />
@@ -331,7 +309,6 @@ export default function Edit() {
                 </View>
               )}
               
-              {/* 添加视频按钮 */}
               {!videoUrl && video.length === 0 && (
                 <View className="upload-item" onClick={chooseVideo}>
                   <View className="upload-icon">+</View>

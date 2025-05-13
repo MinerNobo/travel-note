@@ -81,7 +81,7 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
   const fetchCheckInRecords = () => {
     setLoading(true);
     Taro.request({
-      url: `${baseUrl}/checkin`,
+      url: `${baseUrl}/api/checkin`,
       header: {
         'Authorization': `Bearer ${accessToken}`
       },
@@ -107,7 +107,7 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
     Taro.showLoading({ title: '打卡中...' });
     
     Taro.request({
-      url: `${baseUrl}/checkin`,
+      url: `${baseUrl}/api/checkin`,
       method: 'POST',
       data: {
         cityName: currentCity,

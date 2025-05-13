@@ -10,7 +10,17 @@ interface User {
     updatedAt: string;
 }
 
-export const useStore = create((set) => ({
+interface StoreState {
+    accessToken: string | null;
+    user: User | null;
+    isLoggedIn: boolean;
+    setAccessToken: (accessToken: string) => void;
+    setUser: (user: User) => void;
+    setIsLoggedIn: (isLoggedIn: boolean) => void;
+    logout: () => void;
+}
+
+export const useStore = create<StoreState>((set) => ({
     accessToken: Taro.getStorageSync('accessToken') || null,
     user: Taro.getStorageSync('user') || null,
     isLoggedIn: Taro.getStorageSync('isLoggedIn') || false,

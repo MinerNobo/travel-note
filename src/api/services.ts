@@ -2,7 +2,7 @@ import request from "../utils/request";
 
 // 登录
 export const login = (username: string, password: string) => request({
-    url: "/auth/login",
+    url: "/api/auth/login",
     method: "POST",
     data: {
         username,
@@ -11,7 +11,7 @@ export const login = (username: string, password: string) => request({
 });
 
 export const register = (username: string, password: string) => request({
-    url: "/auth/register",
+    url: "/api/auth/register",
     method: "POST",
     data: {
         username,
@@ -20,28 +20,28 @@ export const register = (username: string, password: string) => request({
 })
 
 export const createNote = (data: any) => request({
-    url: "/notes",
+    url: "/api/notes",
     method: "POST",
     data,
 })
 
 export const getNoteById = (id: string) => request({
-    url: `/notes/${id}`,
+    url: `/api/notes/${id}`,
 })
 
 export const getApprovedNotes = (page: number, pageSize: number, keyword: string) => {
     const query = keyword ? `?keyword=${keyword}` : '';
     return request({
-        url: `/notes/approved?page=${page}&pageSize=${pageSize}${query}`,
+        url: `/api/notes/approved?page=${page}&pageSize=${pageSize}${query}`,
     })
 }
 
 export const getMyNotes = () => request({
-    url: `/notes/my`,
+    url: `/api/notes/my`,
 })
 
 export const updateNote = (id: string, data: any) => request({
-    url: `/notes/${id}`,
+    url: `/api/notes/${id}`,
     method: "PATCH", 
     data,
 })
