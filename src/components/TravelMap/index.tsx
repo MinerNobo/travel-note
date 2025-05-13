@@ -27,7 +27,6 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
   const [currentCity, setCurrentCity] = useState('');
   const [showCheckInButton, setShowCheckInButton] = useState(false);
 
-  // 获取用户足迹记录
   useEffect(() => {
     if (userId) {
       fetchCheckInRecords();
@@ -35,7 +34,6 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
     }
   }, [userId]);
 
-  // 获取用户当前位置
   const getCurrentLocation = () => {
     Taro.getLocation({
       type: 'gcj02',
@@ -77,7 +75,6 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
     });
   };
 
-  // 获取用户足迹记录
   const fetchCheckInRecords = () => {
     setLoading(true);
     Taro.request({
@@ -102,7 +99,6 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
     });
   };
 
-  // 处理打卡
   const handleCheckIn = () => {
     Taro.showLoading({ title: '打卡中...' });
     
@@ -124,7 +120,6 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
             icon: 'success'
           });
           
-          // 刷新足迹记录
           fetchCheckInRecords();
           setShowCheckInButton(false);
         } else {
@@ -146,7 +141,6 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
     });
   };
 
-  // 查看打卡详情
   const viewCheckInDetail = (record: CheckInRecord) => {
     Taro.showModal({
       title: record.cityName,
@@ -173,8 +167,7 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
           </View>
         )}
       </View>
-      
-      {/* 成就展示 */}
+
       <View className='achievement-simple'>
         <Text>您已经打卡了 <Text className='achievement-count'>{checkInRecords.length}</Text> 个城市</Text>
       </View>

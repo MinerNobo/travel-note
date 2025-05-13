@@ -39,7 +39,6 @@ export default function Mine() {
       success: (res) => {
         const filePath = res.tempFilePaths[0];
         setTempImagePath(filePath);
-        // 在裁剪前先提示用户
         Taro.showModal({
           title: '编辑头像',
           content: '您可以裁剪、旋转图片来调整头像',
@@ -47,10 +46,8 @@ export default function Mine() {
           cancelText: '直接上传',
           success: (modalRes) => {
             if (modalRes.confirm) {
-              // 用户点击确定，开始裁剪
               cropImage(filePath);
             } else {
-              // 用户点击取消，直接上传原图
               uploadImage(filePath);
             }
           }
@@ -68,13 +65,9 @@ export default function Mine() {
 
   // 裁剪图片
   const cropImage = (filePath: string) => {
-    // 使用小程序的图片裁剪API
-    // 注意：此API会打开系统自带的图片编辑器，用户可以进行裁剪、旋转等操作
     Taro.editImage({
       src: filePath,
       success: (res) => {
-        // 裁剪成功后会返回编辑后的图片临时路径
-        // 然后上传到服务器
         uploadImage(res.tempFilePath);
       },
       fail: (err) => {
@@ -87,10 +80,9 @@ export default function Mine() {
     });
   };
 
-  // 上传图片到服务器
   const uploadImage = async (filePath: string) => {
     if (!user || !accessToken) return;
-    if (isUploading) return; // 防止重复上传
+    if (isUploading) return; 
     
     setIsUploading(true);
     Taro.showLoading({
@@ -239,7 +231,6 @@ export default function Mine() {
           )}
         </View>
 
-        {/* 足迹地图组件 */}
         {isLoggedIn && user && accessToken && (
           <TravelMap 
             userId={user.id} 

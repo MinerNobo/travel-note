@@ -99,7 +99,6 @@ const Detail = () => {
 
   return (
     <View className="detail-container">
-      {/* 作者信息 */}
       <View className="author-section">
         <Image 
           className="author-avatar" 
