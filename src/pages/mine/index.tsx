@@ -12,6 +12,8 @@ export default function Mine() {
   const { isLoggedIn, logout, setUser, user, accessToken } = useStore();
   
   const [avatarUrl, setAvatarUrl] = useState('');
+  const [tempImagePath, setTempImagePath] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     if (isLoggedIn && user) {
@@ -36,7 +38,23 @@ export default function Mine() {
       sourceType: ['album', 'camera'],
       success: (res) => {
         const filePath = res.tempFilePaths[0];
-        uploadImage(filePath);
+        setTempImagePath(filePath);
+        // 在裁剪前先提示用户
+        Taro.showModal({
+          title: '编辑头像',
+          content: '您可以裁剪、旋转图片来调整头像',
+          confirmText: '开始编辑',
+          cancelText: '直接上传',
+          success: (modalRes) => {
+            if (modalRes.confirm) {
+              // 用户点击确定，开始裁剪
+              cropImage(filePath);
+            } else {
+              // 用户点击取消，直接上传原图
+              uploadImage(filePath);
+            }
+          }
+        });
       },
       fail: (err) => {
         Taro.showToast({
@@ -48,9 +66,36 @@ export default function Mine() {
     });
   };
 
+  // 裁剪图片
+  const cropImage = (filePath: string) => {
+    // 使用小程序的图片裁剪API
+    // 注意：此API会打开系统自带的图片编辑器，用户可以进行裁剪、旋转等操作
+    Taro.editImage({
+      src: filePath,
+      success: (res) => {
+        // 裁剪成功后会返回编辑后的图片临时路径
+        // 然后上传到服务器
+        uploadImage(res.tempFilePath);
+      },
+      fail: (err) => {
+        Taro.showToast({
+          title: '图片裁剪失败',
+          icon: 'none'
+        });
+        console.log(err);
+      }
+    });
+  };
+
   // 上传图片到服务器
   const uploadImage = async (filePath: string) => {
     if (!user || !accessToken) return;
+    if (isUploading) return; // 防止重复上传
+    
+    setIsUploading(true);
+    Taro.showLoading({
+      title: '上传中...'
+    });
 
     Taro.uploadFile({
       url: `${baseUrl}/api/upload/image`,
@@ -60,8 +105,13 @@ export default function Mine() {
         'Authorization': `Bearer ${accessToken}`
       },
       success: (res) => {
-        const data = JSON.parse(res.data);
+        Taro.hideLoading();
         try {
+          const data = JSON.parse(res.data);
+          if (!data.url) {
+            throw new Error('上传失败');
+          }
+          
           Taro.request({
             url: `${baseUrl}/api/auth/avatar`,
             method: 'PATCH',
@@ -70,30 +120,59 @@ export default function Mine() {
             },
             data: {
               avatarUrl: data.url
+            },
+            success: () => {
+              setUser({
+                ...user,
+                avatarUrl: data.url
+              });
+              setAvatarUrl(data.url);
+              Taro.showToast({
+                title: '头像上传成功',
+                icon: 'success'
+              });
+            },
+            fail: (error) => {
+              console.error('更新头像失败', error);
+              Taro.showToast({
+                title: '更新头像失败',
+                icon: 'none'
+              });
+            },
+            complete: () => {
+              setIsUploading(false);
             }
-          })
-          setUser({
-            ...user,
-            avatarUrl: data.url
           });
-          setAvatarUrl(data.url);
-          Taro.showToast({
-            title: '头像上传成功',
-            icon: 'success'
-          });
-
         } catch (error) {
-          console.log(error);
+          console.error('上传图片解析失败', error);
+          Taro.showToast({
+            title: '头像上传失败',
+            icon: 'none'
+          });
+          setIsUploading(false);
         }
-
       },
       fail: (err) => {
+        Taro.hideLoading();
         Taro.showToast({
           title: '头像上传失败',
           icon: 'none'
         });
+        console.error('上传图片失败', err);
+        setIsUploading(false);
       }
-  })
+    });
+  }
+
+  const handleAvatarClick = () => {
+    if (isUploading) {
+      Taro.showToast({
+        title: '正在上传中，请稍候...',
+        icon: 'none'
+      });
+      return;
+    }
+    handleChooseImage();
   }
 
   const handleClick = () => {
@@ -115,8 +194,11 @@ export default function Mine() {
             src={baseUrl + avatarUrl}
             className="avatar-image"
             mode="aspectFill"
-            onClick={handleChooseImage}
+            onClick={handleAvatarClick}
           />
+          {isLoggedIn && (
+            <View className="avatar-tip">点击更换头像</View>
+          )}
         </View>
         
         {isLoggedIn && user ? (

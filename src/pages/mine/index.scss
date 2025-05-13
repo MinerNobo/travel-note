@@ -64,6 +64,27 @@
     height: 100%;
     object-fit: cover;
   }
+
+  .avatar-tip {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    font-size: 18px;
+    padding: 6px 0;
+    text-align: center;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 20;
+  }
+
+  &:hover {
+    .avatar-tip {
+      transform: translateY(0);
+    }
+  }
 }
 
 .username {
