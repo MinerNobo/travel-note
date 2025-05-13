@@ -8,10 +8,10 @@ export default defineAppConfig({
   },
   tabBar: {
     custom: false, // 用微信默认的tabbar
-    color: "7A7E83",
-    selectedColor: "#1890ff", // 文字选中颜色
-    backgroundColor: "#ffffff", // 背景色
-    borderStyle: "black", // 边框颜色
+    color: "#7A7E83",
+    selectedColor: "#1890ff", 
+    backgroundColor: "#ffffff", 
+    borderStyle: "black", 
     list: [
       {
         pagePath: "pages/index/index",
