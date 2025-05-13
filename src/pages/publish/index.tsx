@@ -34,7 +34,6 @@ export default function Publish() {
     }
   }, [isLoggedIn]);
 
-  // 选择图片
   const chooseImage = () => {
     if (!isLoggedIn) {
       Taro.showToast({
@@ -145,7 +144,6 @@ export default function Publish() {
               url: imageUrl,
             });
           } else {
-            console.log(res);
             throw new Error("图片上传失败");
           }
         }
@@ -185,9 +183,7 @@ export default function Publish() {
         content,
         media,
       }
-      console.log(postData);
       const res = await createNote(postData);
-      console.log(res);
       Taro.showToast({
         title: "发布成功",
         icon: "success",

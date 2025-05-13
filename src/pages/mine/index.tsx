@@ -5,7 +5,7 @@ import "./index.scss";
 import { useState, useEffect } from "react";
 import { TravelMap } from "../../components";
 
-const defaultImageUrl = '/uploads/images/default-avatar.png';
+const defaultImageUrl = '/uploads/images/default-avatar.jpg';
 const baseUrl = process.env.TARO_APP_API;
 
 export default function Mine() {

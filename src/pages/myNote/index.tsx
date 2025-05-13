@@ -101,11 +101,10 @@ export default function MyNote() {
                   <View className="note-cover">
                     <Image 
                       className="cover-image" 
-                      src={baseUrl + note.media[0].url} 
+                      src={baseUrl + (note.media[0].type === 'IMAGE' ? note.media[0].url : note.media[0].thumbnailUrl || '')} 
                       mode="aspectFill" 
                     />
                   </View>
-                  
                   <View className="note-content">
                     <View className="note-header">
                       <Text className="note-title">{note.title}</Text>
