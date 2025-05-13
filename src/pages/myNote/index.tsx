@@ -38,14 +38,12 @@ export default function MyNote() {
     }
   }, [isLoggedIn, user, notes]);
 
-  // 编辑游记
   const handleEdit = (id: string) => {
     Taro.navigateTo({
       url: `/pages/edit/index?id=${id}`
     });
   };
 
-  // 删除游记
   const handleDelete = (id: string) => {
     Taro.showModal({
       title: '确认删除',
@@ -63,7 +61,6 @@ export default function MyNote() {
                 title: '删除成功',
                 icon: 'success'
               });
-              // 更新游记列表
               setNotes(notes.filter(note => note.id !== id));
             },
             fail: () => { 
@@ -78,7 +75,6 @@ export default function MyNote() {
     });
   };
 
-  // 获取状态标签文本和样式类
   const getStatusInfo = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -161,7 +157,6 @@ export default function MyNote() {
         </View>
       )}
 
-      {/* 悬浮按钮 FAB */}
       <View 
         className="fab-button"
         onClick={() => Taro.switchTab({ url: '/pages/publish/index' })}

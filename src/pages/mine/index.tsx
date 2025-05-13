@@ -177,9 +177,35 @@ export default function Mine() {
     logout();
     setAvatarUrl(defaultImageUrl);
   }
+  
+  // 收藏页面跳转
+  const handleFavorites = () => {
+    if (!isLoggedIn) {
+      Taro.showToast({
+        title: '请先登录！',
+        icon: 'none'
+      })
+      return;
+    }
+    
+    Taro.navigateTo({
+      url: '/pages/favorites/index'
+    })
+  }
 
   return (
     <View className="page-container">
+      {isLoggedIn && (
+        <View className="top-left-button">
+          <Button 
+            className="favorite-corner-button"
+            onClick={handleFavorites}
+          >
+            收藏
+          </Button>
+        </View>
+      )}
+      
       <View className="content-wrapper">
         <View className="avatar-container">
           <Image 
