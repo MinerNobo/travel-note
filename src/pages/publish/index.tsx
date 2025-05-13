@@ -1,4 +1,4 @@
-import { View, Text, Input, Textarea, Button, Image } from "@tarojs/components";
+import { View, Text, Input, Textarea, Button, Image, Video } from "@tarojs/components";
 import { useState, useEffect } from "react";
 import Taro from "@tarojs/taro";
 import "./index.scss";
@@ -236,7 +236,7 @@ export default function Publish() {
                 </View>
               ) : (
                 <View className="image-item">
-                  <Image src={video[0]} className="preview-image" mode="aspectFill" />
+                  <Video src={video[0]} className="preview-image" />
                   <View className="remove-btn" onClick={removeVideo}>
                     ×
                   </View>
@@ -274,9 +274,9 @@ export default function Publish() {
         <View className="content-section">
           <Textarea
             className="content-textarea"
-            placeholder="分享你的旅行故事，最多1000字"
+            placeholder="分享你的旅行故事，最多300字"
             value={content}
-            maxlength={1000}
+            maxlength={300}
             onInput={(e) => setContent(e.detail.value)}
           />
         </View>

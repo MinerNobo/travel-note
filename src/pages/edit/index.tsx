@@ -1,4 +1,4 @@
-import { View, Text, Input, Textarea, Button, Image } from "@tarojs/components";
+import { View, Text, Input, Textarea, Button, Image, Video } from "@tarojs/components";
 import { useState, useEffect } from "react";
 import Taro from "@tarojs/taro";
 import "./index.scss";
@@ -191,8 +191,7 @@ export default function Edit() {
           }
         }
       }
-
-      // 2. 处理视频，如果有新的视频则上传  
+ 
       if (video.length > 0) {
         const res = await Taro.uploadFile({
           url: `${baseUrl}/api/upload/video`,
@@ -216,11 +215,9 @@ export default function Edit() {
           throw new Error("视频上传失败");
         }
       } else if (videoUrl) {
-        // 如果保留原有视频
         media.push(videoUrl);
       }
       
-      // 3. 更新游记内容
       const updateData = {
         title,
         content,
@@ -302,7 +299,7 @@ export default function Edit() {
 
               {video.length > 0 && (
                 <View className="image-item">
-                  <Image src={video[0]} className="preview-image" mode="aspectFill" />
+                  <Video src={video[0]} className="preview-image" />
                   <View className="remove-btn" onClick={removeVideo}>
                     ×
                   </View>
