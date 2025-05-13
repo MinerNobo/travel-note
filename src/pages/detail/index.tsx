@@ -146,6 +146,12 @@ const Detail = () => {
     setShowFullscreen(true);
   };
 
+  const handleVideoClick = (url: string) => {
+    Taro.navigateTo({
+      url: `/pages/videoPlayer/index?url=${encodeURIComponent(baseUrl + url)}`
+    });
+  };
+
   const handleCloseFullscreen = () => {
     setShowFullscreen(false);
   };
@@ -200,14 +206,13 @@ const Detail = () => {
             {allMedia.map((item, index) => (
               <SwiperItem key={index}>
                 {item.type === 'VIDEO' ? (
-                  <View className="video-wrapper">
-                    <Video
-                      className="video"
-                      src={baseUrl + item.url}
-                      controls
-                      showFullscreenBtn
-                      poster={item.thumbnailUrl ? baseUrl + item.thumbnailUrl : ''}
+                  <View className="video-wrapper" onClick={() => handleVideoClick(item.url)}>
+                    <Image
+                      className="video-thumbnail"
+                      src={item.thumbnailUrl ? baseUrl + item.thumbnailUrl : ''}
+                      mode="aspectFill"
                     />
+                    <View className="play-button">▶</View>
                   </View>
                 ) : (
                   <Image

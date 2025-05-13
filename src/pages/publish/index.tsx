@@ -24,7 +24,6 @@ export default function Publish() {
 
   const { user, isLoggedIn, accessToken } = useStore();
 
-  // 页面加载时检查登录状态
   useEffect(() => {
     if (!isLoggedIn) {
       Taro.showToast({
@@ -46,7 +45,7 @@ export default function Publish() {
       return;
     }
     Taro.chooseImage({
-      count: 9 - images.length, // 最多9张图片
+      count: 9 - images.length, 
       sizeType: ["compressed"],
       sourceType: ["album", "camera"],
       success: function (res) {
@@ -55,7 +54,6 @@ export default function Publish() {
     });
   };
 
-  // 选择视频
   const chooseVideo = () => {
     if (!isLoggedIn) {
       Taro.showToast({
@@ -66,27 +64,24 @@ export default function Publish() {
       return;
     }
     Taro.chooseVideo({
-      sourceType: ["album", "camera"], // 相册或者相机拍摄
-      maxDuration: 60, // 最大时长60秒
+      sourceType: ["album", "camera"], 
+      maxDuration: 60, 
       success: function (res) {
         setVideo([...video, res.tempFilePath]);
       }
     });
   };
 
-  // 删除图片
   const removeImage = (index: number) => {
     const newImages = [...images];
     newImages.splice(index, 1);
     setImages(newImages);
   };
 
-  // 删除视频
   const removeVideo = () => {
     setVideo([]);
   };
 
-  // 表单验证
   const validate = () => {
     const newErrors: {
       title?: string;
@@ -109,9 +104,7 @@ export default function Publish() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // 发布
   const handlePublish = async () => {
-    // 检查用户是否登录
     if (!isLoggedIn) {
       Taro.showToast({
         title: "请先登录",
@@ -132,7 +125,6 @@ export default function Publish() {
     Taro.showLoading({ title: "发布中..." });
 
     try {
-      // 1. 先上传图片，拿到imageUrls
       const imagePosts: MediaItem[] = [];
       if (images.length > 0) {
         for (let i = 0; i < images.length; i++) {
@@ -158,8 +150,7 @@ export default function Publish() {
           }
         }
       }
-
-      // 2. 上传视频，拿到videoUrl  
+ 
       let videoPost: MediaItem | undefined;
       if (video.length > 0) {
         const res = await Taro.uploadFile({
@@ -189,7 +180,6 @@ export default function Publish() {
         media.push(videoPost);
       }
 
-      // 3. 发布游记内容
       const postData = {
         title,
         content,
@@ -233,7 +223,6 @@ export default function Publish() {
         <View className="media-section">
           {images.length > 0 || video.length > 0 ? (
             <View className="image-list">
-              {/* 已上传的图片列表, 可以删除 */}
               {images.map((img, index) => (
                 <View key={index} className="image-item">
                   <Image src={img} className="preview-image" mode="aspectFill" />

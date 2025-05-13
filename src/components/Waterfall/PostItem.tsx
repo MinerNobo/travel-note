@@ -20,7 +20,6 @@ interface PostItemProps {
 
 const PostItem = ({ item } : PostItemProps) => {
     const handleClick = () => {
-        // 跳转到详情页，并传递id参数
         Taro.navigateTo({
             url: `/pages/detail/index?id=${item.id}`
         })

@@ -92,8 +92,6 @@ export default function Index() {
 
       <View className='content'>
         <Waterfall data={postData} />
-        
-        {/* 加载状态提示 */}
         {postData.length > 0 && (
           <AtLoadMore
             status={isLoading ? 'loading' : hasMore ? 'more' : 'noMore'}
