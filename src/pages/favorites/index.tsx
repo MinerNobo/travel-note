@@ -42,7 +42,6 @@ export default function Favorites() {
     }
   }, [isLoggedIn, accessToken]);
 
-  // 获取收藏的游记
   const getFavorites = async () => {
     setLoading(true);
     try {
@@ -73,7 +72,6 @@ export default function Favorites() {
     }
   };
 
-  // 跳转到游记详情
   const handleNoteClick = (id: string) => {
     Taro.navigateTo({
       url: `/pages/detail/index?id=${id}`

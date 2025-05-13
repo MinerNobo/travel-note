@@ -5,7 +5,6 @@
   overflow: hidden;
 }
 
-// 作者信息样式
 .author-section {
   display: flex;
   align-items: center;
@@ -55,7 +54,6 @@
   }
 }
 
-// 标题样式
 .title-section {
   margin-bottom: 25px;
   position: relative;
@@ -69,7 +67,6 @@
   }
 }
 
-// 图片轮播样式
 .image-section {
   position: relative;
   margin-bottom: 30px;
@@ -116,7 +113,6 @@
   }
 }
 
-// 内容样式
 .content-section {
   margin-bottom: 30px;
   background-color: #ffffff;
@@ -133,7 +129,6 @@
   }
 }
 
-// 全屏预览
 .fullscreen-container {
   position: fixed;
   top: 0;
@@ -164,7 +159,6 @@
   }
 }
 
-// 加载中
 .loading {
   display: flex;
   justify-content: center;
@@ -172,4 +166,70 @@
   height: 100vh;
   font-size: 20px;
   color: #999;
+}
+
+.interaction-section {
+  display: flex;
+  justify-content: space-around;
+  padding: 24px 30px;
+  margin-top: 20px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+}
+
+.like-button, .favorite-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 30px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.like-button {
+  background-color: #f8f8f8;
+}
+
+.like-button.liked {
+  background-color: #ffebee;
+}
+
+.favorite-button {
+  background-color: #f8f8f8;
+}
+
+.favorite-button.favorited {
+  background-color: #fffde7;
+}
+
+.like-icon {
+  font-size: 36px;
+  margin-bottom: 8px;
+  color: #aaa;
+}
+
+.liked .like-icon {
+  color: #f44336;
+}
+
+.favorite-icon {
+  font-size: 36px;
+  margin-bottom: 8px;
+  color: #aaa;
+}
+
+.favorited .favorite-icon {
+  color: #ffc107;
+}
+
+.like-count, .favorite-text {
+  font-size: 16px;
+  color: #666;
+  font-weight: 500;
 } 

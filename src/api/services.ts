@@ -46,3 +46,21 @@ export const updateNote = (id: string, data: any) => request({
     data,
 })
 
+// 点赞游记
+export const likeNote = (noteId: string) => request({
+    url: `/api/notes/${noteId}/like`,
+    method: "POST",
+});
+
+// 收藏游记
+export const setFavoriteNote = (noteId: string) => request({
+    url: `/api/notes/${noteId}/favorite`,
+    method: "POST",
+});
+
+// 检查是否已点赞和收藏
+export const getInteractionStatus = (noteId: string) => request({
+    url: `/api/notes/${noteId}/interaction-status`,
+    method: "GET",
+});
+

@@ -1,9 +1,10 @@
 import './index.scss'
 import { View, Text, Image, Swiper, SwiperItem, Video, Button } from '@tarojs/components';
-import { getNoteById } from '../../api/services';
+import { getNoteById, likeNote, setFavoriteNote, getInteractionStatus } from '../../api/services';
 import Taro, { useShareAppMessage } from '@tarojs/taro';
 import { useEffect, useState } from 'react';
 import { formatDate } from '../../utils/dateFormat';
+import { useStore } from "../../store/useStore";
 
 const baseUrl = process.env.TARO_APP_API
 
@@ -23,6 +24,8 @@ interface Note {
   media: MediaItem[];
   createdAt: string;
   updatedAt: string;
+  viewCount: number;
+  likeCount: number;
   author: {
     id: string;
     username: string;
@@ -36,6 +39,11 @@ const Detail = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showFullscreen, setShowFullscreen] = useState(false);
   const [fullscreenImage, setFullscreenImage] = useState('');
+  const [isLiked, setIsLiked] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [localLikeCount, setLocalLikeCount] = useState(0);
+  
+  const { isLoggedIn } = useStore();
 
   useEffect(() => {
     const instance = Taro.getCurrentInstance();
@@ -46,6 +54,10 @@ const Detail = () => {
       getNoteById(id)
         .then(res => {
           setPost(res);
+          setLocalLikeCount(res.likeCount);
+          if (isLoggedIn) {
+            checkInteraction(id);
+          }
         })
         .catch(err => {
           console.error('获取游记详情失败:', err);
@@ -58,7 +70,7 @@ const Detail = () => {
           setLoading(false);
         });
     }
-  }, []);
+  }, [isLoggedIn]);
 
   useShareAppMessage(() => {
     if (!post) return {};
@@ -67,6 +79,67 @@ const Detail = () => {
       path: `/pages/detail/index?id=${post.id}`
     };
   });
+
+  const checkInteraction = async (noteId: string) => {
+    try {
+      const res = await getInteractionStatus(noteId);
+      setIsLiked(res.liked);
+      setIsFavorited(res.favorited);
+    } catch (err) {
+      console.error('获取交互状态失败:', err);
+    }
+  };
+
+  const handleLike = async () => {
+    if (!isLoggedIn) {
+      Taro.showToast({
+        title: '请先登录',
+        icon: 'none'
+      });
+      return;
+    }
+
+    try {
+      await likeNote(post!.id);
+      if (isLiked) {
+        setLocalLikeCount(prev => Math.max(0, prev - 1));
+      } else {
+        setLocalLikeCount(prev => prev + 1);
+      }
+      setIsLiked(!isLiked);
+    } catch (err) {
+      console.error('点赞操作失败:', err);
+      Taro.showToast({
+        title: '操作失败，请稍后重试',
+        icon: 'none'
+      });
+    }
+  };
+
+  const handleFavorite = async () => {
+    if (!isLoggedIn) {
+      Taro.showToast({
+        title: '请先登录',
+        icon: 'none'
+      });
+      return;
+    }
+
+    try {
+      await setFavoriteNote(post!.id);
+      setIsFavorited(!isFavorited);
+      Taro.showToast({
+        title: isFavorited ? '取消收藏成功' : '收藏成功',
+        icon: 'success'
+      });
+    } catch (err) {
+      console.error('收藏操作失败:', err);
+      Taro.showToast({
+        title: '操作失败，请稍后重试',
+        icon: 'none'
+      });
+    }
+  };
 
   const handleImageClick = (url: string) => {
     setFullscreenImage(url);
@@ -102,7 +175,7 @@ const Detail = () => {
       <View className="author-section">
         <Image 
           className="author-avatar" 
-          src={baseUrl + post.author.avatarUrl} 
+          src={post.author.avatarUrl ? baseUrl + post.author.avatarUrl : ''}
           mode="aspectFill" 
         />
         <View className="author-info">
@@ -133,7 +206,7 @@ const Detail = () => {
                       src={baseUrl + item.url}
                       controls
                       showFullscreenBtn
-                      poster={baseUrl + item.thumbnailUrl}
+                      poster={item.thumbnailUrl ? baseUrl + item.thumbnailUrl : ''}
                     />
                   </View>
                 ) : (
@@ -155,6 +228,24 @@ const Detail = () => {
 
       <View className="content-section">
         <Text className="content">{post.content}</Text>
+      </View>
+
+      <View className="interaction-section">
+        <View 
+          className={`like-button ${isLiked ? 'liked' : ''}`}
+          onClick={handleLike}
+        >
+          <View className="like-icon">❤</View>
+          <Text className="like-count">{localLikeCount}</Text>
+        </View>
+        
+        <View 
+          className={`favorite-button ${isFavorited ? 'favorited' : ''}`}
+          onClick={handleFavorite}
+        >
+          <View className="favorite-icon">★</View>
+          <Text className="favorite-text">{isFavorited ? '已收藏' : '收藏'}</Text>
+        </View>
       </View>
 
       {showFullscreen && (
