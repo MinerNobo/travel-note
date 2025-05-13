@@ -2,6 +2,7 @@ import { View, Text, Image } from "@tarojs/components";
 import { useState, useEffect } from "react";
 import Taro from "@tarojs/taro";
 import { useStore } from "../../store/useStore";
+import { getFavorites } from "../../api/services";
 import "./index.scss";
 
 const baseUrl = process.env.TARO_APP_API;
@@ -17,7 +18,7 @@ interface FavoriteNote {
   title: string;
   content: string;
   author: Author;
-  firstImage: string;
+  imageUrl: string;
   favoriteId: string;
 }
 
@@ -26,9 +27,25 @@ export default function Favorites() {
   const [favorites, setFavorites] = useState<FavoriteNote[]>([]);
   const [loading, setLoading] = useState(true);
   
+  const getFavoritesList = async () => {
+    setLoading(true);
+    try {
+      const res = await getFavorites();
+      setFavorites(res.data);
+    } catch (error) {
+      console.error('获取收藏失败', error);
+      Taro.showToast({
+        title: '获取收藏失败',
+        icon: 'none'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (isLoggedIn && accessToken) {
-      getFavorites();
+      getFavoritesList();
     } else {
       Taro.showToast({
         title: '请先登录',
@@ -41,36 +58,6 @@ export default function Favorites() {
       });
     }
   }, [isLoggedIn, accessToken]);
-
-  const getFavorites = async () => {
-    setLoading(true);
-    try {
-      const res = await Taro.request({
-        url: `${baseUrl}/api/notes/favorites`,
-        method: 'GET',
-        header: {
-          'Authorization': `Bearer ${accessToken}`
-        }
-      });
-      
-      if (res.statusCode === 200) {
-        setFavorites(res.data);
-      } else {
-        Taro.showToast({
-          title: '获取收藏失败',
-          icon: 'none'
-        });
-      }
-    } catch (error) {
-      console.error('获取收藏失败', error);
-      Taro.showToast({
-        title: '获取收藏失败',
-        icon: 'none'
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleNoteClick = (id: string) => {
     Taro.navigateTo({
@@ -93,7 +80,7 @@ export default function Favorites() {
                 <View className="note-cover">
                   <Image 
                     className="cover-image" 
-                    src={baseUrl + (note.firstImage)}
+                    src={baseUrl + (note.imageUrl)}
                     mode="aspectFill" 
                   />
                 </View>
