@@ -12,7 +12,7 @@ const baseUrl = process.env.TARO_APP_API;
 interface MediaItem {
   type: "IMAGE" | "VIDEO";
   url: string;
-  thumbnail?: string;
+  thumbnailUrl?: string;
 }
 
 export default function Publish() {
@@ -168,7 +168,7 @@ export default function Publish() {
           videoPost = {
             type: "VIDEO", 
             url: data.url.videoUrl,
-            thumbnail: data.url.thumbnailUrl,
+            thumbnailUrl: data.url.thumbnailUrl,
           };
         } else {
           throw new Error("视频上传失败");
