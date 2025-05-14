@@ -290,8 +290,8 @@ export default function Publish() {
         </View>
         
         <Button 
-          className={`publish-btn ${(!agreed || loading) ? 'disabled' : ''}`} 
-          onClick={(agreed && !loading) ? handlePublish : undefined}
+          className={`publish-btn ${(!agreed || loading || !title.trim() || !content.trim() || images.length === 0) ? 'disabled' : ''}`} 
+          onClick={(agreed && !loading && title.trim() && content.trim() && images.length > 0) ? handlePublish : undefined}
         >
           {loading ? '发布中...' : '发游记'}
         </Button>

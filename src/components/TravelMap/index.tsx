@@ -156,6 +156,11 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
     });
   };
 
+  const getUniqueCityCount = () => {
+    const uniqueCities = new Set(checkInRecords.map(record => record.cityName));
+    return uniqueCities.size;
+  };
+
   return (
     <View className='travel-map-container'>
       <View className='map-header'>
@@ -169,7 +174,7 @@ const TravelMap: React.FC<TravelMapProps> = ({ userId, accessToken }) => {
       </View>
 
       <View className='achievement-simple'>
-        <Text>您已经打卡了 <Text className='achievement-count'>{checkInRecords.length}</Text> 个城市</Text>
+        <Text>您已经打卡了 <Text className='achievement-count'>{getUniqueCityCount()}</Text> 个城市</Text>
       </View>
       
       <View className='map-wrapper'>
